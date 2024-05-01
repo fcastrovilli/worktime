@@ -2,8 +2,10 @@ import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
 import * as schema from './schemas';
 
 import { neonConfig } from '@neondatabase/serverless';
+
 import ws from 'ws';
-neonConfig.webSocketConstructor = ws;
+
+neonConfig.webSocketConstructor = typeof WebSocket !== 'undefined' ? WebSocket : ws;
 
 import { DATABASE_URL } from '$env/static/private';
 import { Pool } from '@neondatabase/serverless';
