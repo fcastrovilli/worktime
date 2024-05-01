@@ -32,7 +32,6 @@ export async function GET(event: RequestEvent): Promise<Response> {
 			existingUser = await db.query.usersTable.findFirst({
 				where: eq(usersTable.github_id, githubUser.id)
 			});
-			console.log(existingUser);
 		} catch (e) {
 			console.log(e);
 		}
