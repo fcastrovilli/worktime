@@ -27,9 +27,15 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		});
 		const githubUser: GitHubUser = await githubUserResponse.json();
 
-		const existingUser = await db.query.usersTable.findFirst({
-			where: eq(usersTable.github_id, githubUser.id)
-		});
+		let existingUser = null;
+		try {
+			existingUser = await db.query.usersTable.findFirst({
+				where: eq(usersTable.github_id, githubUser.id)
+			});
+			console.log(existingUser);
+		} catch (e) {
+			console.log(e);
+		}
 
 		if (existingUser) {
 			const session = await lucia.createSession(existingUser.id, {});
@@ -46,7 +52,9 @@ export async function GET(event: RequestEvent): Promise<Response> {
 				github_id: githubUser.id,
 				username: githubUser.login,
 				fullname: githubUser.name,
-				avatar: githubUser.avatar_url
+				avatar: githubUser.avatar_url,
+				createdAt: new Date(),
+				updatedAt: new Date()
 			});
 
 			const session = await lucia.createSession(userId, {});

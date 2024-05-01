@@ -1,13 +1,16 @@
-import { drizzle } from "drizzle-orm/better-sqlite3";
-import { DrizzleSQLiteAdapter } from "@lucia-auth/adapter-drizzle";
-import * as schema from "./schemas";
+import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
+import * as schema from './schemas';
 
-import Database from "better-sqlite3";
+import { neonConfig } from '@neondatabase/serverless';
+import ws from 'ws';
+neonConfig.webSocketConstructor = ws;
 
-const sqlite = new Database("db.sqlite");
-
-export const db = drizzle(sqlite, { schema });
+import { DATABASE_URL } from '$env/static/private';
+import { Pool } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
+const pool = new Pool({ connectionString: DATABASE_URL });
+export const db = drizzle(pool, { schema });
 
 export type Database = typeof db;
 
-export const adapter = new DrizzleSQLiteAdapter(db, schema.sessionsTable, schema.usersTable);
+export const adapter = new DrizzlePostgreSQLAdapter(db, schema.sessionsTable, schema.usersTable);

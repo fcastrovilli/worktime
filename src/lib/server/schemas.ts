@@ -1,16 +1,19 @@
-import { sql, type InferSelectModel } from 'drizzle-orm';
-import { text, integer, sqliteTable, SQLiteAsyncDialect } from 'drizzle-orm/sqlite-core';
+import type { InferSelectModel } from 'drizzle-orm';
+
+import { pgTable, text, timestamp, integer } from 'drizzle-orm/pg-core';
 
 const timestamps = {
-	createdAt: text('created_at')
-		.notNull()
-		.default(sql`CURRENT_TIMESTAMP`),
-	updatedAt: text('updated_at')
-		.notNull()
-		.default(sql`CURRENT_TIMESTAMP`)
+	createdAt: timestamp('created_at', {
+		withTimezone: true,
+		mode: 'date'
+	}).notNull(),
+	updatedAt: timestamp('updated_at', {
+		withTimezone: true,
+		mode: 'date'
+	}).notNull()
 };
 
-export const usersTable = sqliteTable('user', {
+export const usersTable = pgTable('user', {
 	id: text('id').notNull().primaryKey(),
 	username: text('username').notNull(),
 	github_id: integer('github_id').notNull(),
@@ -22,13 +25,15 @@ export const usersTable = sqliteTable('user', {
 /**
  * Sessions are used to store the user's session information.
  */
-export const sessionsTable = sqliteTable('session', {
+export const sessionsTable = pgTable('session', {
 	id: text('id').notNull().primaryKey(),
 	userId: text('user_id')
 		.notNull()
 		.references(() => usersTable.id),
-	expiresAt: integer('expires_at').notNull()
+	expiresAt: timestamp('expires_at', {
+		withTimezone: true,
+		mode: 'date'
+	}).notNull()
 });
 
 export type User = InferSelectModel<typeof usersTable>;
-export const sqliteDialect = new SQLiteAsyncDialect();
