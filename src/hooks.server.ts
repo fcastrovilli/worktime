@@ -1,8 +1,12 @@
 import { lucia } from '$lib/server/auth';
-import type { Handle } from '@sveltejs/kit';
+import { redirect, type Handle } from '@sveltejs/kit';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const sessionId = event.cookies.get(lucia.sessionCookieName);
+	if (!event.route.id?.startsWith('/(auth)') && !sessionId) {
+		redirect(302, '/signup');
+	}
+
 	if (!sessionId) {
 		event.locals.user = null;
 		event.locals.session = null;
@@ -24,6 +28,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 			...sessionCookie.attributes
 		});
 	}
+
 	event.locals.user = user;
 	event.locals.session = session;
 	return resolve(event);
