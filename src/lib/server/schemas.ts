@@ -48,6 +48,7 @@ export const clientsTable = pgTable('client', {
 	email: text('email').unique(),
 	details: text('details'),
 	website: text('website'),
+	slug: text('slug').notNull().unique(),
 	user_id: text('user_id')
 		.notNull()
 		.references(() => usersTable.id),
@@ -102,6 +103,7 @@ export const projectsTable = pgTable('project', {
 		withTimezone: true,
 		mode: 'date'
 	}),
+	slug: text('slug').notNull().unique(),
 	client_id: text('client_id')
 		.notNull()
 		.references(() => clientsTable.id),

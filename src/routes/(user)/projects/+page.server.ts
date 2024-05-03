@@ -4,20 +4,30 @@ import type { PageServerLoad, Actions } from './$types.js';
 import { superValidate } from 'sveltekit-superforms';
 import { formSchema } from './schema';
 import { zod } from 'sveltekit-superforms/adapters';
-import { clientsTable } from '$lib/server/schemas.js';
+import { projectsTable } from '$lib/server/schemas.js';
 import { generateId } from 'lucia';
 import { eq } from 'drizzle-orm';
 import slugify from 'slugify';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) throw redirect(302, '/signup');
-	const clients = await db.query.clientsTable.findMany({
-		where: eq(clientsTable.user_id, locals.user.id),
+	const projects = await db.query.projectsTable.findMany({
+		where: eq(projectsTable.user_id, locals.user.id),
 		with: {
-			projects: true
+			clients: true,
+			worksessions: true
+		}
+	});
+	const clients = await db.query.clientsTable.findMany({
+		where: eq(projectsTable.user_id, locals.user.id),
+		columns: {
+			id: true,
+			name: true,
+			slug: true
 		}
 	});
 	return {
+		projects,
 		clients,
 		form: await superValidate(zod(formSchema))
 	};
@@ -34,11 +44,14 @@ export const actions: Actions = {
 		}
 
 		try {
-			await db.insert(clientsTable).values({
+			await db.insert(projectsTable).values({
 				id: generateId(15),
 				user_id: event.locals.user.id,
+				name: form.data.name,
+				description: form.data.description,
+				client_id: form.data.client,
 				slug: slugify(form.data.name).toLowerCase(),
-				...form.data,
+				deadline: new Date(form.data.deadline ?? ''),
 				createdAt: new Date(),
 				updatedAt: new Date()
 			});
@@ -48,7 +61,7 @@ export const actions: Actions = {
 
 		return {
 			form,
-			client_name: form.data.name
+			project_name: form.data.name
 		};
 	}
 };
