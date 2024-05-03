@@ -6,11 +6,15 @@ const timestamps = {
 	createdAt: timestamp('created_at', {
 		withTimezone: true,
 		mode: 'date'
-	}).notNull(),
+	})
+		.notNull()
+		.defaultNow(),
 	updatedAt: timestamp('updated_at', {
 		withTimezone: true,
 		mode: 'date'
-	}).notNull()
+	})
+		.notNull()
+		.defaultNow()
 };
 
 export const usersTable = pgTable('user', {
@@ -120,3 +124,6 @@ export const projectsRelations = relations(projectsTable, ({ many, one }) => ({
 }));
 
 export type User = InferSelectModel<typeof usersTable>;
+export type Client = InferSelectModel<typeof clientsTable>;
+export type Project = InferSelectModel<typeof projectsTable>;
+export type Worksession = InferSelectModel<typeof worksessionsTable>;
