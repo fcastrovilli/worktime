@@ -7,10 +7,12 @@
 	$: clients = data.clients;
 </script>
 
-<div class="container flex flex-col items-center justify-center gap-4 py-10">
-	<h1 class="text-4xl font-semibold">Clients</h1>
-	<div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
+<div class="container flex flex-col items-center justify-center gap-4 py-5">
+	<div class="flex flex-row items-center justify-center gap-4">
+		<h1 class="text-4xl font-semibold">Clients</h1>
 		<NewClientForm data={form} />
+	</div>
+	<div class="flex flex-wrap items-center justify-center gap-4 sm:flex-row">
 		{#if clients.length > 0}
 			{#each clients as client}
 				<Card.Root class="w-full max-w-sm">

@@ -39,7 +39,7 @@
 	title="New Client"
 	description="Here you can create a new client profile. Click 'Create' when you're done."
 >
-	<Plus slot="trigger" size={50} />
+	<Plus slot="trigger" size={35} />
 	<div slot="form">
 		<form method="POST" use:enhance>
 			<Form.Field {form} name="name">
