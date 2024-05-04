@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button/index.js';
-	import * as Card from '$lib/components/ui/card/index.js';
+	import Card from '$lib/components/crud/card.svelte';
+	import CardContainer from '$lib/components/crud/card_container.svelte';
 	import NewClientForm from './new_client_form.svelte';
 	export let data;
 	let form = data.form;
@@ -12,31 +13,28 @@
 		<h1 class="text-4xl font-semibold">Clients</h1>
 		<NewClientForm data={form} />
 	</div>
-	<div class="flex flex-wrap items-center justify-center gap-4 sm:flex-row">
+	<CardContainer>
 		{#if clients.length > 0}
 			{#each clients as client}
-				<Card.Root class="w-full max-w-sm">
-					<Card.Header>
-						<Card.Title class="text-2xl font-semibold uppercase">{client.name}</Card.Title>
-						<Card.Description>
-							{#if client.email}
-								<a href="mailto:{client.email}">{client.email}</a>
-							{/if}
-							{#if client.website}
-								<a href={client.website} target="_blank">{client.website}</a>
-							{/if}
-						</Card.Description>
-					</Card.Header>
-					<Card.Content>
+				<Card title={client.name}>
+					<div slot="description" class="flex flex-col">
+						{#if client.email}
+							<a href="mailto:{client.email}">{client.email}</a>
+						{/if}
+						{#if client.website}
+							<a href={client.website} target="_blank">{client.website}</a>
+						{/if}
+					</div>
+					<div slot="content">
 						<p>Projects: {client.projects.length}</p>
-					</Card.Content>
-					<Card.Footer>
+					</div>
+					<div slot="footer">
 						<Button variant="default" class="w-full" href="/clients/{client.slug}">Show</Button>
-					</Card.Footer>
-				</Card.Root>
+					</div>
+				</Card>
 			{/each}
 		{:else}
 			<p>No clients found</p>
 		{/if}
-	</div>
+	</CardContainer>
 </div>

@@ -3,7 +3,7 @@
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { Input } from '$lib/components/ui/input';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
-	import { formSchema, type FormSchema } from './schema';
+	import { createProjectSchema, type CreateProject } from '$lib/zod-schemas.js';
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
@@ -11,19 +11,18 @@
 	import Panel from '$lib/components/crud/panel.svelte';
 	import FormDatePicker from './form_date_picker.svelte';
 
-	type Client = {
+	type CleanClient = {
 		id: string;
 		name: string;
 		slug: string;
 	};
 
-	export let data: SuperValidated<Infer<FormSchema>>;
-	export let clients: Client[];
-
+	export let data: SuperValidated<Infer<CreateProject>>;
+	export let clients: CleanClient | CleanClient[];
 	let open = false;
 
 	const form = superForm(data, {
-		validators: zodClient(formSchema),
+		validators: zodClient(createProjectSchema),
 		taintedMessage: null,
 		onResult({ result }) {
 			if (result.type === 'success') {
@@ -50,6 +49,15 @@
 				value: $formData.client
 			}
 		: undefined;
+
+	$: if (!Array.isArray(clients)) {
+		selectedLabel = clients.name;
+		selectedClient = {
+			label: selectedLabel,
+			value: clients.id
+		};
+		$formData.client = clients.id;
+	}
 </script>
 
 <Panel
@@ -60,7 +68,7 @@
 >
 	<Plus slot="trigger" size={35} />
 	<div slot="form">
-		<form method="POST" use:enhance>
+		<form method="POST" action="?/createProject" use:enhance>
 			<Form.Field {form} name="name">
 				<Form.Control let:attrs>
 					<Form.Label>Project Name</Form.Label>
@@ -74,6 +82,7 @@
 					<Form.Label>Client</Form.Label>
 					<Select.Root
 						selected={selectedClient}
+						disabled={!Array.isArray(clients)}
 						onSelectedChange={(v) => {
 							v && (($formData.client = v.value), (selectedLabel = v.label));
 						}}
@@ -82,9 +91,13 @@
 							<Select.Value placeholder="Select a client for this project." />
 						</Select.Trigger>
 						<Select.Content>
-							{#each clients as client}
-								<Select.Item value={client.id} label={client.name} />
-							{/each}
+							{#if Array.isArray(clients)}
+								{#each clients as client}
+									<Select.Item value={client.id} label={client.name} />
+								{/each}
+							{:else}
+								<Select.Item value={clients.id} label={clients.name} />
+							{/if}
 						</Select.Content>
 					</Select.Root>
 					<input hidden bind:value={$formData.client} name={attrs.name} />

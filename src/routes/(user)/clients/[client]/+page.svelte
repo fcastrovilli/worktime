@@ -1,10 +1,26 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button/index.js';
-	import * as Card from '$lib/components/ui/card/index.js';
+	import Card from '$lib/components/crud/card.svelte';
+	import CardContainer from '$lib/components/crud/card_container.svelte';
+	import NewProjectForm from '../../projects/new_project_form.svelte';
 
 	export let data;
 
 	$: client = data.client;
+
+	type CleanClient = {
+		id: string;
+		name: string;
+		slug: string;
+	};
+
+	let client_clean: CleanClient;
+
+	$: client_clean = {
+		id: client.id,
+		name: client.name,
+		slug: client.slug
+	};
 </script>
 
 <div class="container flex flex-col items-center justify-center gap-4 py-10">
@@ -18,28 +34,26 @@
 		<h3 class="py-5 text-2xl font-semibold">
 			Projects <small class="text-sm text-muted-foreground">({client.projects.length})</small>
 		</h3>
+		<NewProjectForm data={data.createProjectForm} clients={client_clean} />
 		{#if client.projects.length > 0}
-			<div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
+			<CardContainer>
 				{#each client.projects as project}
-					<Card.Root class="w-full max-w-sm">
-						<Card.Header>
-							<Card.Title class="text-2xl font-semibold uppercase">{project.name}</Card.Title>
-							<Card.Description>
-								<p class="text-sm text-muted-foreground">Sessions: {project.worksessions.length}</p>
-							</Card.Description>
-						</Card.Header>
-						<Card.Content>
+					<Card title={project.name}>
+						<div slot="description" class="flex flex-col">
+							<p class="text-sm text-muted-foreground">Sessions: {project.worksessions.length}</p>
+						</div>
+						<div slot="content" class="flex flex-col">
 							<p>They owe me 1000€</p>
 							{#if project.deadline}
 								<p>Deadline: {project.deadline.toLocaleDateString()}</p>
 							{/if}
-						</Card.Content>
-						<Card.Footer>
+						</div>
+						<div slot="footer">
 							<Button variant="default" class="w-full" href="/projects/{project.slug}">Show</Button>
-						</Card.Footer>
-					</Card.Root>
+						</div>
+					</Card>
 				{/each}
-			</div>
+			</CardContainer>
 		{/if}
 	{:else}
 		<p class="text-lg">Client not found</p>

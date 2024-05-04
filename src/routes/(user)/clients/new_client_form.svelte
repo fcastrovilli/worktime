@@ -2,18 +2,18 @@
 	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
-	import { formSchema, type FormSchema } from './schema';
+	import { createClientSchema, type CreateClient } from '$lib/zod-schemas.js';
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
 	import { Plus } from 'lucide-svelte';
 	import Panel from '$lib/components/crud/panel.svelte';
 
-	export let data: SuperValidated<Infer<FormSchema>>;
+	export let data: SuperValidated<Infer<CreateClient>>;
 	let open = false;
 
 	const form = superForm(data, {
-		validators: zodClient(formSchema),
+		validators: zodClient(createClientSchema),
 		onResult({ result }) {
 			if (result.type === 'success') {
 				open = false;
@@ -41,7 +41,7 @@
 >
 	<Plus slot="trigger" size={35} />
 	<div slot="form">
-		<form method="POST" use:enhance>
+		<form method="POST" action="?/createClient" use:enhance>
 			<Form.Field {form} name="name">
 				<Form.Control let:attrs>
 					<Form.Label>Client Name</Form.Label>

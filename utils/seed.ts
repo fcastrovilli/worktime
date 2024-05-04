@@ -117,16 +117,19 @@ function seedDB(userId: string) {
 
 			// Create max 5 worksessions per project
 			for (let j = 0; j < Math.floor(Math.random() * 5 + 1); j++) {
+				const start = faker.date.past();
+				const end = new Date(start.getTime() + Math.floor(Math.random() * (24 * 60 * 60 * 1000)));
+
 				worksessions.push({
 					id: generateId(15),
 					detail: faker.lorem.sentence(),
-					start: faker.date.past(),
-					end: faker.date.future(),
+					start: start,
+					end: end,
 					project_id: projectId,
 					client_id: clientId,
 					user_id: userId,
-					createdAt: faker.date.anytime(),
-					updatedAt: faker.date.anytime()
+					createdAt: start,
+					updatedAt: end
 				});
 			}
 		}

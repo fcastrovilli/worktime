@@ -1,7 +1,8 @@
 <script lang="ts">
 	import NewProjectForm from './new_project_form.svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import * as Card from '$lib/components/ui/card/index.js';
+	import Card from '$lib/components/crud/card.svelte';
+	import CardContainer from '$lib/components/crud/card_container.svelte';
 	export let data;
 	let form = data.form;
 	$: projects = data.projects;
@@ -12,10 +13,29 @@
 		<h1 class="text-4xl font-semibold">Projects</h1>
 		<NewProjectForm data={form} clients={data.clients} />
 	</div>
-	<div class="flex flex-wrap items-center justify-center gap-4 sm:flex-row">
+	<CardContainer>
 		{#if projects.length > 0}
 			{#each projects as project}
-				<Card.Root class="w-full max-w-sm">
+				<Card title={project.name}>
+					<div slot="description" class="flex flex-col">
+						{#if project.clients.name}
+							<p class="text-sm text-muted-foreground">{project.clients.name}</p>
+						{/if}
+						{#if project.deadline}
+							<p class="text-sm text-muted-foreground">
+								Deadline: {project.deadline.toLocaleDateString()}
+							</p>
+						{/if}
+					</div>
+					<div slot="content" class="flex flex-col">
+						<p>Full Budget: 10000€</p>
+						<p>€/Hour: 35€</p>
+					</div>
+					<div slot="footer">
+						<Button variant="default" class="w-full" href="/projects/{project.slug}">Show</Button>
+					</div>
+				</Card>
+				<!-- <Card.Root class="w-full max-w-sm">
 					<Card.Header>
 						<Card.Title class="text-2xl font-semibold uppercase">{project.name}</Card.Title>
 						<Card.Description>
@@ -32,10 +52,10 @@
 					<Card.Footer>
 						<Button variant="default" class="w-full" href="/projects/{project.slug}">Show</Button>
 					</Card.Footer>
-				</Card.Root>
+				</Card.Root> -->
 			{/each}
 		{:else}
 			<p>No projects found</p>
 		{/if}
-	</div>
+	</CardContainer>
 </div>

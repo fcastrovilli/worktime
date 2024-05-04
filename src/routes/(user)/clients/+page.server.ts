@@ -1,13 +1,12 @@
 import { db } from '$lib/server/db';
-import { redirect, fail } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types.js';
+import { createClientSchema } from '$lib/zod-schemas.js';
 import { superValidate } from 'sveltekit-superforms';
-import { formSchema } from './schema';
 import { zod } from 'sveltekit-superforms/adapters';
 import { clientsTable } from '$lib/server/schemas.js';
-import { generateId } from 'lucia';
 import { eq } from 'drizzle-orm';
-import slugify from 'slugify';
+import { createClientAction } from '$lib/server/crud/actions.js';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) throw redirect(302, '/signup');
@@ -19,36 +18,10 @@ export const load: PageServerLoad = async ({ locals }) => {
 	});
 	return {
 		clients,
-		form: await superValidate(zod(formSchema))
+		form: await superValidate(zod(createClientSchema))
 	};
 };
 
 export const actions: Actions = {
-	default: async (event) => {
-		if (!event.locals.user) throw redirect(302, '/signup');
-		const form = await superValidate(event, zod(formSchema));
-		if (!form.valid) {
-			return fail(400, {
-				form
-			});
-		}
-
-		try {
-			await db.insert(clientsTable).values({
-				id: generateId(15),
-				user_id: event.locals.user.id,
-				slug: slugify(form.data.name).toLowerCase(),
-				...form.data,
-				createdAt: new Date(),
-				updatedAt: new Date()
-			});
-		} catch (error) {
-			return fail(400, { form });
-		}
-
-		return {
-			form,
-			client_name: form.data.name
-		};
-	}
+	createClient: createClientAction
 };

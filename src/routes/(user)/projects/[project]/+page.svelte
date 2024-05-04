@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button/index.js';
-	import * as Card from '$lib/components/ui/card/index.js';
+	import Card from '$lib/components/crud/card.svelte';
+	import CardContainer from '$lib/components/crud/card_container.svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -19,29 +20,29 @@
 			Sessions <small class="text-sm text-muted-foreground">({project.worksessions.length})</small>
 		</h3>
 		{#if project.worksessions.length > 0}
-			<div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
+			<CardContainer>
 				{#each project.worksessions as session, i}
-					<Card.Root class="w-full max-w-sm">
-						<Card.Header>
-							<Card.Title class="text-2xl font-semibold uppercase"
-								>{project.worksessions.length - i}</Card.Title
-							>
-							<Card.Description>
-								<p class="text-sm">
-									Total Hours: {new Date(session.end).getTime() - new Date(session.start).getTime()}
-								</p>
-							</Card.Description>
-						</Card.Header>
-						<Card.Content>
-							<p>Start: {session.start.toLocaleDateString()}</p>
-							<p>End: {session.end.toLocaleDateString()}</p>
-						</Card.Content>
-						<Card.Footer>
+					<Card title={`#${project.worksessions.length - i}`}>
+						<div slot="description" class="flex flex-col">
+							<p class="text-sm text-muted-foreground">
+								Total Hours: {new Date(
+									new Date(session.end).getTime() - new Date(session.start).getTime()
+								).getHours()}
+							</p>
+						</div>
+						<div slot="content" class="flex flex-col">
+							<p>
+								Start: {session.start.toLocaleDateString()}
+								{session.start.toLocaleTimeString()}
+							</p>
+							<p>End: {session.end.toLocaleDateString()} {session.end.toLocaleTimeString()}</p>
+						</div>
+						<div slot="footer">
 							<Button variant="default" class="w-full" href="/sessions/{session.id}">Show</Button>
-						</Card.Footer>
-					</Card.Root>
+						</div>
+					</Card>
 				{/each}
-			</div>
+			</CardContainer>
 		{/if}
 	{:else}
 		<p class="text-lg">Project not found</p>
