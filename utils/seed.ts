@@ -27,7 +27,7 @@ const worksessions: schema.Worksession[] = [];
 
 const main = async () => {
 	try {
-		console.log('Seeding database 🌱');
+		console.log('Clearing database 🗑️');
 		// Delete all data
 		await db.delete(schema.sessionsTable);
 		await db.delete(schema.worksessionsTable);
@@ -65,7 +65,7 @@ const main = async () => {
 
 			seedDB(userId);
 		}
-
+		console.log('Seeding database 🌱');
 		await db.insert(schema.usersTable).values(users);
 		await db.insert(schema.clientsTable).values(clients);
 		await db.insert(schema.projectsTable).values(projects);
@@ -74,7 +74,7 @@ const main = async () => {
 		console.log('Seeding successful 🎉');
 	} catch (error) {
 		console.error(error);
-		throw new Error('Failed to seed database');
+		throw new Error('Failed to seed database 💥');
 	}
 };
 
@@ -84,14 +84,14 @@ function seedDB(userId: string) {
 	// Create max 5 clients per user
 	for (let j = 0; j < Math.floor(Math.random() * 5 + 1); j++) {
 		const clientId = generateId(15);
-
+		const clientName = faker.company.name();
 		clients.push({
 			id: clientId,
-			name: faker.company.name(),
+			name: clientName,
 			email: faker.internet.email(),
 			details: faker.company.catchPhrase(),
 			website: faker.internet.url(),
-			slug: slugify(faker.company.name().toLowerCase()),
+			slug: slugify(clientName).toLowerCase(),
 			user_id: userId,
 			createdAt: faker.date.anytime(),
 			updatedAt: faker.date.anytime()
@@ -100,12 +100,15 @@ function seedDB(userId: string) {
 		// Create max 5 projects per client
 		for (let j = 0; j < Math.floor(Math.random() * 5 + 1); j++) {
 			const projectId = generateId(15);
+			const projectName = faker.word.words({
+				count: { min: 1, max: 4 }
+			});
 			projects.push({
 				id: projectId,
-				name: faker.company.name(),
+				name: projectName,
 				description: faker.lorem.paragraph(),
 				deadline: faker.date.future(),
-				slug: slugify(faker.company.name().toLowerCase()),
+				slug: slugify(projectName).toLowerCase(),
 				client_id: clientId,
 				user_id: userId,
 				createdAt: faker.date.anytime(),
