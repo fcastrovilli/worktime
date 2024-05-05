@@ -35,24 +35,6 @@
 						<Button variant="default" class="w-full" href="/projects/{project.slug}">Show</Button>
 					</div>
 				</Card>
-				<!-- <Card.Root class="w-full max-w-sm">
-					<Card.Header>
-						<Card.Title class="text-2xl font-semibold uppercase">{project.name}</Card.Title>
-						<Card.Description>
-							<p class="text-sm text-muted-foreground">{project.clients.name}</p>
-						</Card.Description>
-					</Card.Header>
-					<Card.Content>
-						<p>Full Budget: 10000€</p>
-						<p>€/Hour: 35€</p>
-						{#if project.deadline}
-							<p>Deadline: {project.deadline.toLocaleDateString()}</p>
-						{/if}
-					</Card.Content>
-					<Card.Footer>
-						<Button variant="default" class="w-full" href="/projects/{project.slug}">Show</Button>
-					</Card.Footer>
-				</Card.Root> -->
 			{/each}
 		{:else}
 			<p>No projects found</p>

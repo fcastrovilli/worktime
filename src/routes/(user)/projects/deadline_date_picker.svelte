@@ -18,8 +18,8 @@
 	export let form;
 	const { form: formData } = form;
 
-	const df = new DateFormatter('en-US', {
-		dateStyle: 'long'
+	const df = new DateFormatter('it-IT', {
+		dateStyle: 'short'
 	});
 
 	let value: DateValue | undefined;

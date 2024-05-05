@@ -26,7 +26,7 @@
 						<div slot="description" class="flex flex-col">
 							<p class="text-sm text-muted-foreground">
 								Total Hours: {new Date(
-									new Date(session.end).getTime() - new Date(session.start).getTime()
+									new Date(session.end ?? '').getTime() - new Date(session.start).getTime()
 								).getHours()}
 							</p>
 						</div>
@@ -35,7 +35,10 @@
 								Start: {session.start.toLocaleDateString()}
 								{session.start.toLocaleTimeString()}
 							</p>
-							<p>End: {session.end.toLocaleDateString()} {session.end.toLocaleTimeString()}</p>
+
+							{#if session.end}
+								<p>End: {session.end.toLocaleDateString()} {session.end.toLocaleTimeString()}</p>
+							{/if}
 						</div>
 						<div slot="footer">
 							<Button variant="default" class="w-full" href="/sessions/{session.id}">Show</Button>

@@ -9,7 +9,7 @@
 	import { toast } from 'svelte-sonner';
 	import { Plus } from 'lucide-svelte';
 	import Panel from '$lib/components/crud/panel.svelte';
-	import FormDatePicker from './form_date_picker.svelte';
+	import DeadlineDatePicker from './deadline_date_picker.svelte';
 
 	type CleanClient = {
 		id: string;
@@ -108,7 +108,7 @@
 				<Form.FieldErrors />
 			</Form.Field>
 
-			<FormDatePicker {form} />
+			<DeadlineDatePicker {form} />
 
 			<Form.Field {form} name="description">
 				<Form.Control let:attrs>

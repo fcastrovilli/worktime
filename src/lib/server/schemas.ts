@@ -66,7 +66,7 @@ export const clientsRelations = relations(clientsTable, ({ one, many }) => ({
 
 export const worksessionsTable = pgTable('worksession', {
 	id: text('id').notNull().primaryKey(),
-	detail: text('detail'),
+	details: text('details'),
 	start: timestamp('start', {
 		withTimezone: true,
 		mode: 'date'
@@ -74,7 +74,7 @@ export const worksessionsTable = pgTable('worksession', {
 	end: timestamp('end', {
 		withTimezone: true,
 		mode: 'date'
-	}).notNull(),
+	}),
 	project_id: text('project_id')
 		.notNull()
 		.references(() => projectsTable.id),
