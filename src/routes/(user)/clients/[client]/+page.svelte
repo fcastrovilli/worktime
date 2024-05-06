@@ -3,18 +3,13 @@
 	import Card from '$lib/components/crud/card.svelte';
 	import CardContainer from '$lib/components/crud/card_container.svelte';
 	import NewProjectForm from '../../projects/new_project_form.svelte';
+	import type { BasicType } from '$lib/basic_utils';
 
 	export let data;
 
 	$: client = data.client;
 
-	type CleanClient = {
-		id: string;
-		name: string;
-		slug: string;
-	};
-
-	let client_clean: CleanClient;
+	let client_clean: BasicType;
 
 	$: client_clean = {
 		id: client.id,

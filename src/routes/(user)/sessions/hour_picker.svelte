@@ -15,8 +15,6 @@
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import * as Form from '$lib/components/ui/form/index.js';
 	import Input from '$lib/components/ui/input/input.svelte';
-	import { calculateElapsedTime } from '$lib/basic_utils';
-	import { Label } from '$lib/components/ui/label/index.js';
 
 	export let form;
 	const { form: formData } = form;
@@ -40,12 +38,6 @@
 		today_date.year,
 		today_date.month,
 		today_date.day
-	);
-
-	let elapsed_time: string = '';
-	$: elapsed_time = calculateElapsedTime(
-		start_datetime?.toDate(getLocalTimeZone()),
-		end_datetime?.toDate(getLocalTimeZone())
 	);
 </script>
 
@@ -217,12 +209,3 @@
 	</Form.Control>
 	<Form.FieldErrors />
 </Form.Field>
-
-{#if start_datetime && end_datetime}
-	<div class="py-2">
-		<div class="flex flex-col gap-2 border-b border-t py-2 text-center">
-			<Label>Session Duration</Label>
-			<span class="text-sm">{elapsed_time}</span>
-		</div>
-	</div>
-{/if}

@@ -1,7 +1,7 @@
 import { db } from '../db';
-import { clientsTable, projectsTable } from '../schemas';
+import { clientsTable, projectsTable, worksessionsTable } from '../schemas';
 import { generateId } from 'lucia';
-import { createClientSchema, createProjectSchema } from '$lib/zod-schemas';
+import { createClientSchema, createProjectSchema, createWorksessionSchema } from '$lib/zod-schemas';
 import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -51,7 +51,7 @@ export async function createProjectAction(event: RequestEvent) {
 			description: form.data.description,
 			client_id: form.data.client,
 			slug: slugify(form.data.name).toLowerCase(),
-			deadline: new Date(form.data.deadline ?? ''),
+			deadline: form.data.deadline ? new Date(form.data.deadline) : null,
 			createdAt: new Date(),
 			updatedAt: new Date()
 		});
@@ -62,6 +62,36 @@ export async function createProjectAction(event: RequestEvent) {
 	return {
 		createProjectForm: form,
 		project_name: form.data.name
+	};
+}
+
+export async function createWorksessionAction(event: RequestEvent) {
+	if (!event.locals.user) throw redirect(302, '/signup');
+	const form = await superValidate(event, zod(createWorksessionSchema));
+	if (!form.valid) {
+		return fail(400, {
+			createWorksessionForm: form
+		});
+	}
+	try {
+		await db.insert(worksessionsTable).values({
+			id: generateId(15),
+			user_id: event.locals.user.id,
+			project_id: form.data.project,
+			client_id: form.data.client,
+			start: new Date(form.data.start),
+			end: form.data.end ? new Date(form.data.end) : null,
+			details: form.data.details,
+			createdAt: new Date(),
+			updatedAt: new Date()
+		});
+	} catch (error) {
+		return fail(400, { createWorksessionForm: form });
+	}
+
+	return {
+		createWorksessionForm: form,
+		worksession_name: form.data.details
 	};
 }
 

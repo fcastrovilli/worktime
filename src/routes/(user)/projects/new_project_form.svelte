@@ -1,6 +1,5 @@
 <script lang="ts">
 	import * as Form from '$lib/components/ui/form';
-	import * as Select from '$lib/components/ui/select/index.js';
 	import { Input } from '$lib/components/ui/input';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
 	import { createProjectSchema, type CreateProject } from '$lib/zod-schemas.js';
@@ -10,15 +9,11 @@
 	import { Plus } from 'lucide-svelte';
 	import Panel from '$lib/components/crud/panel.svelte';
 	import DeadlineDatePicker from './deadline_date_picker.svelte';
-
-	type CleanClient = {
-		id: string;
-		name: string;
-		slug: string;
-	};
+	import type { BasicType } from '$lib/basic_utils';
+	import SelectClient from '$lib/components/crud/select_client.svelte';
 
 	export let data: SuperValidated<Infer<CreateProject>>;
-	export let clients: CleanClient | CleanClient[];
+	export let clients: BasicType | BasicType[];
 	let open = false;
 
 	const form = superForm(data, {
@@ -40,24 +35,6 @@
 	});
 
 	const { form: formData, enhance } = form;
-
-	let selectedLabel: string | undefined;
-
-	$: selectedClient = $formData.client
-		? {
-				label: selectedLabel,
-				value: $formData.client
-			}
-		: undefined;
-
-	$: if (!Array.isArray(clients)) {
-		selectedLabel = clients.name;
-		selectedClient = {
-			label: selectedLabel,
-			value: clients.id
-		};
-		$formData.client = clients.id;
-	}
 </script>
 
 <Panel
@@ -80,27 +57,7 @@
 			<Form.Field {form} name="client">
 				<Form.Control let:attrs>
 					<Form.Label>Client</Form.Label>
-					<Select.Root
-						selected={selectedClient}
-						disabled={!Array.isArray(clients)}
-						onSelectedChange={(v) => {
-							v && (($formData.client = v.value), (selectedLabel = v.label));
-						}}
-					>
-						<Select.Trigger {...attrs}>
-							<Select.Value placeholder="Select a client for this project." />
-						</Select.Trigger>
-						<Select.Content>
-							{#if Array.isArray(clients)}
-								{#each clients as client}
-									<Select.Item value={client.id} label={client.name} />
-								{/each}
-							{:else}
-								<Select.Item value={clients.id} label={clients.name} />
-							{/if}
-						</Select.Content>
-					</Select.Root>
-					<input hidden bind:value={$formData.client} name={attrs.name} />
+					<SelectClient {form} {clients} {attrs} />
 				</Form.Control>
 				<Form.Description>
 					You can manage clients in your <a href="/clients">clients settings</a>.

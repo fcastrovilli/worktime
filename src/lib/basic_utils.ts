@@ -12,3 +12,20 @@ export const calculateElapsedTime = (start: Date | undefined, end: Date | undefi
 
 	return `${daysString} ${hoursString} ${minutesString}`;
 };
+
+export type BasicType = {
+	id: string;
+	name: string;
+	slug: string;
+};
+
+export type BasicProjectWithClients = {
+	id: string;
+	name: string;
+	slug: string;
+	clients: {
+		id: string;
+		name: string;
+		slug: string;
+	};
+}[];

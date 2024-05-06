@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button/index.js';
+	import { Label } from '$lib/components/ui/label/index.js';
 	import Card from '$lib/components/crud/card.svelte';
 	import CardContainer from '$lib/components/crud/card_container.svelte';
 	import type { PageData } from './$types';
+	import { calculateElapsedTime } from '$lib/basic_utils';
 
 	export let data: PageData;
 
@@ -22,12 +24,13 @@
 		{#if project.worksessions.length > 0}
 			<CardContainer>
 				{#each project.worksessions as session, i}
-					<Card title={`#${project.worksessions.length - i}`}>
-						<div slot="description" class="flex flex-col">
-							<p class="text-sm text-muted-foreground">
-								Total Hours: {new Date(
-									new Date(session.end ?? '').getTime() - new Date(session.start).getTime()
-								).getHours()}
+					<Card>
+						<div slot="title" class="flex flex-row items-baseline gap-2">
+							<Label class="text-2xl font-semibold uppercase"
+								>#{project.worksessions.length - i}</Label
+							>
+							<p class="text-sm lowercase text-muted-foreground">
+								{session.end ? calculateElapsedTime(session.start, session.end) : 'Still ongoing'}
 							</p>
 						</div>
 						<div slot="content" class="flex flex-col">

@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db';
-import { redirect } from '@sveltejs/kit';
-import type { PageServerLoad, Actions } from './$types.js';
+import { redirect, type Actions } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types.js';
 import { createClientSchema } from '$lib/zod-schemas.js';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';

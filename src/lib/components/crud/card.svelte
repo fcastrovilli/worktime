@@ -1,11 +1,15 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card/index.js';
-	export let title: string;
+	export let title: string | undefined = undefined;
 </script>
 
 <Card.Root class="w-full max-w-sm">
 	<Card.Header>
-		<Card.Title class="text-2xl font-semibold uppercase">{title}</Card.Title>
+		<Card.Title class="text-2xl font-semibold uppercase">
+			<slot name="title">
+				{title}
+			</slot>
+		</Card.Title>
 		<Card.Description>
 			<slot name="description">
 				<p>No description provided</p>

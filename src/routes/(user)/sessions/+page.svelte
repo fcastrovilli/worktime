@@ -3,6 +3,8 @@
 	import Card from '$lib/components/crud/card.svelte';
 	import CardContainer from '$lib/components/crud/card_container.svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
+	import { Label } from '$lib/components/ui/label';
+	import { calculateElapsedTime } from '$lib/basic_utils';
 
 	export let data;
 	$: sessions = data.worksessions;
@@ -11,28 +13,32 @@
 <div class="container flex flex-col items-center justify-center gap-4 py-5">
 	<div class="flex flex-row items-center justify-center gap-4">
 		<h1 class="text-4xl font-semibold">Sessions</h1>
-		<NewSessionForm data={data.form} />
+		<NewSessionForm data={data.form} projects={data.projects} />
 	</div>
 	<CardContainer>
 		{#if sessions.length > 0}
 			{#each sessions as session, i}
-				<Card title={`#${sessions.length - i}`}>
-					<div slot="description" class="flex flex-col">
-						<p class="text-sm text-muted-foreground">
-							Total Hours: {new Date(
-								new Date(session.end ?? '').getTime() - new Date(session.start).getTime()
-							).getHours()}
+				<Card>
+					<div slot="title" class="flex flex-row items-baseline gap-2">
+						<Label class="text-2xl font-semibold uppercase">#{sessions.length - i}</Label>
+						<p class="text-sm lowercase text-muted-foreground">
+							{session.end ? calculateElapsedTime(session.start, session.end) : 'Still ongoing'}
 						</p>
 					</div>
+					<div slot="description" class="flex flex-col">
+						<span class="text-xl text-foreground">{session.projects.name}</span>
+						<span class="text-xs text-muted-foreground">{session.clients.name}</span>
+					</div>
 					<div slot="content" class="flex flex-col">
-						<p>
+						<p>{session.details}</p>
+						<!-- <p>
 							Start: {session.start.toLocaleDateString()}
 							{session.start.toLocaleTimeString()}
 						</p>
 
 						{#if session.end}
 							<p>End: {session.end.toLocaleDateString()} {session.end.toLocaleTimeString()}</p>
-						{/if}
+						{/if} -->
 					</div>
 					<div slot="footer">
 						<Button variant="default" class="w-full" href="/sessions/{session.id}">Show</Button>

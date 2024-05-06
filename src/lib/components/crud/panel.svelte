@@ -14,7 +14,7 @@
 			<slot name="trigger">{open_label}</slot>
 		</Button>
 	</Sheet.Trigger>
-	<Sheet.Content side="right">
+	<Sheet.Content side="right" class="no-scrollbar overflow-y-auto">
 		<Sheet.Header>
 			<Sheet.Title>{title}</Sheet.Title>
 			<Sheet.Description>
