@@ -1,8 +1,6 @@
 <script lang="ts">
 	import NewProjectForm from './new_project_form.svelte';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import Card from '$lib/components/crud/card.svelte';
-	import CardContainer from '$lib/components/crud/card_container.svelte';
+	import ProjectsDataTable from '$lib/components/crud/tables/projects_data_table.svelte';
 	export let data;
 	let form = data.form;
 	$: projects = data.projects;
@@ -13,31 +11,5 @@
 		<h1 class="text-4xl font-semibold">Projects</h1>
 		<NewProjectForm data={form} clients={data.clients} />
 	</div>
-	<CardContainer>
-		{#if projects.length > 0}
-			{#each projects as project}
-				<Card title={project.name}>
-					<div slot="description" class="flex flex-col">
-						{#if project.clients.name}
-							<p class="text-sm text-muted-foreground">{project.clients.name}</p>
-						{/if}
-						{#if project.deadline}
-							<p class="text-sm text-muted-foreground">
-								Deadline: {project.deadline.toLocaleDateString()}
-							</p>
-						{/if}
-					</div>
-					<div slot="content" class="flex flex-col">
-						<p>Full Budget: 10000€</p>
-						<p>€/Hour: 35€</p>
-					</div>
-					<div slot="footer">
-						<Button variant="default" class="w-full" href="/projects/{project.slug}">Show</Button>
-					</div>
-				</Card>
-			{/each}
-		{:else}
-			<p>No projects found</p>
-		{/if}
-	</CardContainer>
+	<ProjectsDataTable {projects} />
 </div>
