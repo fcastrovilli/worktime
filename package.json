@@ -55,11 +55,13 @@
 	"dependencies": {
 		"@internationalized/date": "^3.5.2",
 		"@neondatabase/serverless": "^0.9.1",
+		"@types/d3-scale": "^4.0.8",
 		"@types/ws": "^8.5.10",
 		"arctic": "^1.8.0",
 		"bits-ui": "^0.21.6",
 		"clsx": "^2.1.1",
 		"cmdk-sv": "^0.0.17",
+		"d3-scale": "^4.0.2",
 		"formsnap": "^1.0.0",
 		"lucia": "^3.2.0",
 		"lucide-svelte": "^0.376.1",
