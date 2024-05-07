@@ -1,11 +1,24 @@
-import { drizzle } from 'drizzle-orm/neon-http';
-import { neon } from '@neondatabase/serverless';
 import * as schema from '../src/lib/server/schemas';
 import { generateId, generateIdFromEntropySize } from 'lucia';
 import { faker } from '@faker-js/faker';
 import slugify from 'slugify';
 
-const sql = neon(process.env.DATABASE_URL as string);
+// import { drizzle } from 'drizzle-orm/neon-http';
+// import { neon } from '@neondatabase/serverless';
+// const sql = neon(process.env.DATABASE_URL as string);
+// const db = drizzle(sql, {
+// 	schema
+// });
+
+import { drizzle } from 'drizzle-orm/node-postgres';
+import pg from 'pg';
+
+const client = new pg.Client({
+	connectionString: process.env.DATABASE_URL as string
+});
+
+await client.connect();
+const db = drizzle(client, { schema });
 
 type DefaultUser = {
 	username: string;
@@ -16,16 +29,15 @@ type DefaultUser = {
 
 const defaultUser: DefaultUser = JSON.parse(process.env.DEFAULT_USER as string);
 
-const db = drizzle(sql, {
-	schema
-});
-
 const users: schema.User[] = [];
 const clients: schema.Client[] = [];
 const projects: schema.Project[] = [];
 const worksessions: schema.Worksession[] = [];
 
+const max = 8;
 const main = async () => {
+	faker.seed(Math.floor(Math.random() * 10000000));
+
 	try {
 		console.log('Clearing database 🗑️');
 		// Delete all data
@@ -51,12 +63,12 @@ const main = async () => {
 		}
 
 		// Create 5 users
-		for (let i = 0; i < 5; i++) {
+		for (let i = 0; i < 3; i++) {
 			const userId = generateIdFromEntropySize(10);
 			users.push({
 				id: userId,
 				username: faker.person.firstName().toLowerCase(),
-				github_id: Math.floor(Math.random() * 100000000),
+				github_id: Math.floor(Math.random() * 10000000),
 				fullname: faker.person.fullName(),
 				avatar: faker.image.avatarGitHub(),
 				createdAt: faker.date.anytime(),
@@ -66,11 +78,17 @@ const main = async () => {
 			seedDB(userId);
 		}
 		console.log('Seeding database 🌱');
-		await db.insert(schema.usersTable).values(users);
-		await db.insert(schema.clientsTable).values(clients);
-		await db.insert(schema.projectsTable).values(projects);
-		await db.insert(schema.worksessionsTable).values(worksessions);
+		try {
+			await db.insert(schema.usersTable).values(users);
+			await db.insert(schema.clientsTable).values(clients);
+			await db.insert(schema.projectsTable).values(projects);
+			await db.insert(schema.worksessionsTable).values(worksessions);
+		} catch (error) {
+			console.error(error);
+			throw new Error('Failed to seed database 💥');
+		}
 
+		await client.end();
 		console.log('Seeding successful 🎉');
 	} catch (error) {
 		console.error(error);
@@ -82,7 +100,7 @@ main();
 
 function seedDB(userId: string) {
 	// Create max 5 clients per user
-	for (let j = 0; j < Math.floor(Math.random() * 5 + 1); j++) {
+	for (let j = 0; j < Math.floor(Math.random() * max + 1); j++) {
 		const clientId = generateId(15);
 		const clientName = faker.company.name();
 		clients.push({
@@ -98,10 +116,10 @@ function seedDB(userId: string) {
 		});
 
 		// Create max 5 projects per client
-		for (let j = 0; j < Math.floor(Math.random() * 5 + 1); j++) {
+		for (let j = 0; j < Math.floor(Math.random() * max + 1); j++) {
 			const projectId = generateId(15);
 			const projectName = faker.word.words({
-				count: { min: 1, max: 4 }
+				count: { min: 1, max: 6 }
 			});
 			projects.push({
 				id: projectId,
@@ -116,13 +134,13 @@ function seedDB(userId: string) {
 			});
 
 			// Create max 5 worksessions per project
-			for (let j = 0; j < Math.floor(Math.random() * 5 + 1); j++) {
+			for (let j = 0; j < Math.floor(Math.random() * max + 1); j++) {
 				const start = faker.date.past();
 				const end = new Date(start.getTime() + Math.floor(Math.random() * (24 * 60 * 60 * 1000)));
 
 				worksessions.push({
 					id: generateId(15),
-					detail: faker.lorem.sentence(),
+					details: faker.lorem.sentence(),
 					start: start,
 					end: end,
 					project_id: projectId,
