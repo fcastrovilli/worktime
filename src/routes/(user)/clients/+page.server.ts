@@ -5,7 +5,7 @@ import { createClientSchema } from '$lib/zod-schemas.js';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { clientsTable } from '$lib/server/schemas.js';
-import { eq } from 'drizzle-orm';
+import { asc, eq } from 'drizzle-orm';
 import { createClientAction } from '$lib/server/crud/actions.js';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -14,7 +14,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 		where: eq(clientsTable.user_id, locals.user.id),
 		with: {
 			projects: true
-		}
+		},
+		orderBy: asc(clientsTable.createdAt)
 	});
 	return {
 		clients,

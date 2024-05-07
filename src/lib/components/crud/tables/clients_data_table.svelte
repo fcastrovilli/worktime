@@ -1,10 +1,12 @@
 <script lang="ts">
-	import type { Client } from '$lib/server/schemas';
-	import { readable } from 'svelte/store';
+	import type { ClientWithProjects } from '$lib/server/schemas';
+	import { writable } from 'svelte/store';
 	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
 	import * as Table from '$lib/components/ui/table';
 	import DataTableActions from './data_table_actions.svelte';
 	import DataTableCheckbox from './data_table_checkbox.svelte';
+	import DataTableProjectButton from './data_table_project_button.svelte';
+	import DataTableClientButton from './data_table_client_button.svelte';
 	import {
 		addPagination,
 		addSortBy,
@@ -18,10 +20,16 @@
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 
-	export let clients: Client[];
+	export let clients: ClientWithProjects[];
 
-	const clients_table = createTable(readable(clients), {
-		page: addPagination(),
+	const clients_table = writable(clients);
+	$: $clients_table = clients;
+
+	const table = createTable(clients_table, {
+		page: addPagination({
+			initialPageSize: 5,
+			initialPageIndex: 0
+		}),
 		sort: addSortBy(),
 		filter: addTableFilter({
 			fn: ({ filterValue, value }) => value.toLowerCase().includes(filterValue.toLowerCase())
@@ -30,10 +38,10 @@
 		select: addSelectedRows()
 	});
 
-	const hidableCols = ['email', 'name', 'details'];
+	const hidableCols = ['email', 'name', 'details', 'website', 'projects'];
 
-	const columns = clients_table.createColumns([
-		clients_table.column({
+	const columns = table.createColumns([
+		table.column({
 			accessor: 'id',
 			header: (_, { pluginStates }) => {
 				const { allPageRowsSelected } = pluginStates.select;
@@ -51,17 +59,43 @@
 			},
 			plugins: {}
 		}),
-		clients_table.column({
+		table.column({
 			accessor: 'name',
 			header: 'Name',
-			plugins: {}
+			plugins: {},
+			cell: ({ row }) => {
+				let client: ClientWithProjects | null = null;
+				if (row.isData()) {
+					client = $clients_table.find((c) => c.id === row.original.id) || null;
+				}
+				return createRender(DataTableClientButton, { clients: client });
+			}
 		}),
-		clients_table.column({
+		table.column({
 			accessor: 'email',
 			header: 'Email',
-			plugins: {}
+			plugins: {},
+			cell: ({ value }) => {
+				return value ? value : 'No email provided';
+			}
 		}),
-		clients_table.column({
+		table.column({
+			accessor: 'website',
+			header: 'Website',
+			plugins: {},
+			cell: ({ value }) => {
+				return value ? value : 'No website provided';
+			}
+		}),
+		table.column({
+			accessor: 'projects',
+			header: 'Projects',
+			plugins: {},
+			cell: ({ value }) => {
+				return createRender(DataTableProjectButton, { projects: value });
+			}
+		}),
+		table.column({
 			accessor: 'details',
 			header: 'Details',
 			plugins: {
@@ -71,9 +105,12 @@
 				filter: {
 					exclude: true
 				}
+			},
+			cell: ({ value }) => {
+				return value ? value : 'No details provided';
 			}
 		}),
-		clients_table.column({
+		table.column({
 			accessor: ({ id }) => id,
 			header: '',
 			cell: ({ value }) => {
@@ -90,7 +127,7 @@
 		})
 	]);
 	const { headerRows, pageRows, tableAttrs, tableBodyAttrs, pluginStates, flatColumns, rows } =
-		clients_table.createViewModel(columns);
+		table.createViewModel(columns);
 	const { hasNextPage, hasPreviousPage, pageIndex } = pluginStates.page;
 	const { filterValue } = pluginStates.filter;
 	const { hiddenColumnIds } = pluginStates.hide;
@@ -134,8 +171,8 @@
 						<Table.Row>
 							{#each headerRow.cells as cell (cell.id)}
 								<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-									<Table.Head {...attrs} class="[&:has([role=checkbox])]:pl-3">
-										{#if cell.id === 'email' || cell.id === 'name'}
+									<Table.Head {...attrs} class="text-left [&:has([role=checkbox])]:pl-3">
+										{#if cell.id === 'email' || cell.id === 'name' || cell.id === 'website' || cell.id === 'projects'}
 											<Button variant="ghost" on:click={props.sort.toggle}>
 												<Render of={cell.render()} />
 												<ArrowUpDown class={'ml-2 h-4 w-4'} />
@@ -157,7 +194,21 @@
 							{#each row.cells as cell (cell.id)}
 								<Subscribe attrs={cell.attrs()} let:attrs>
 									<Table.Cell {...attrs}>
-										<Render of={cell.render()} />
+										{#if cell.id === 'details'}
+											<div class="max-w-sm">
+												<Render of={cell.render()} />
+											</div>
+										{:else if cell.id === 'projects'}
+											<Render of={cell.render()} />
+										{:else if cell.id === 'id'}
+											<div class="px-1">
+												<Render of={cell.render()} />
+											</div>
+										{:else}
+											<div class="px-4 text-left">
+												<Render of={cell.render()} />
+											</div>
+										{/if}
 									</Table.Cell>
 								</Subscribe>
 							{/each}

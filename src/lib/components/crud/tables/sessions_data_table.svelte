@@ -1,10 +1,16 @@
 <script lang="ts">
-	import type { Client, ProjectWithClientsAndWorksessions, Worksession } from '$lib/server/schemas';
+	import type {
+		Client,
+		Project,
+		Worksession,
+		WorksessionWithProjectsAndClients
+	} from '$lib/server/schemas';
 	import { writable } from 'svelte/store';
 	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
 	import * as Table from '$lib/components/ui/table';
 	import DataTableActions from './data_table_actions.svelte';
 	import DataTableCheckbox from './data_table_checkbox.svelte';
+	import DataTableClientButton from './data_table_client_button.svelte';
 	import DataTableProjectButton from './data_table_project_button.svelte';
 	import {
 		addPagination,
@@ -19,13 +25,13 @@
 	import ChevronDown from 'lucide-svelte/icons/chevron-down';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { DateFormatter } from '@internationalized/date';
-	import DataTableClientButton from './data_table_client_button.svelte';
+	import { calculateElapsedTime } from '$lib/basic_utils';
 
-	export let projects: ProjectWithClientsAndWorksessions[];
-	const projects_table = writable(projects);
-	$: $projects_table = projects;
+	export let worksessions: WorksessionWithProjectsAndClients[];
+	const worksessions_table = writable(worksessions);
+	$: $worksessions_table = worksessions;
 
-	const table = createTable(projects_table, {
+	const table = createTable(worksessions_table, {
 		page: addPagination({
 			initialPageSize: 5,
 			initialPageIndex: 0
@@ -39,10 +45,11 @@
 	});
 
 	const df = new DateFormatter('it-IT', {
-		dateStyle: 'short'
+		dateStyle: 'short',
+		timeStyle: 'short'
 	});
 
-	const hidableCols = ['name', 'deadline', 'description', 'clients', 'worksessions'];
+	const hidableCols = ['start', 'end', 'details', 'clients', 'projects', 'Duration'];
 
 	const columns = table.createColumns([
 		table.column({
@@ -64,60 +71,54 @@
 			plugins: {}
 		}),
 		table.column({
-			accessor: 'name',
-			header: 'Name',
+			accessor: ({ id }) => id,
+			header: 'Duration',
 			plugins: {},
-			cell: ({ row }) => {
-				let project: ProjectWithClientsAndWorksessions | null = null;
+			cell: ({ row, id }) => {
+				let worksession: WorksessionWithProjectsAndClients | null = null;
 				if (row.isData()) {
-					project = $projects_table.find((c) => c.id === row.original.id) ?? null;
+					worksession = $worksessions_table.find((c) => c.id === row.original.id) ?? null;
 				}
-				return createRender(DataTableProjectButton, { projects: project });
+				return worksession?.end
+					? calculateElapsedTime(worksession?.start, worksession?.end)
+					: 'Running';
 			}
 		}),
+
 		table.column({
-			accessor: 'deadline',
-			header: 'Deadline',
-			plugins: {
-				filter: {
-					exclude: true
+			accessor: 'projects',
+			header: 'Projects',
+			plugins: {},
+			cell: ({ row }) => {
+				let worksession: WorksessionWithProjectsAndClients | null = null;
+				let projects: Project[] | Project | null = null;
+				if (row.isData()) {
+					worksession = $worksessions_table.find((c) => c.id === row.original.id) ?? null;
+					projects = worksession?.projects ?? null;
 				}
-			},
+				return createRender(DataTableProjectButton, { projects: projects });
+			}
+		}),
+
+		table.column({
+			accessor: 'start',
+			header: 'Start',
+			plugins: {},
 			cell: ({ value }) => {
 				return value ? df.format(value) : '∞';
 			}
 		}),
 		table.column({
-			accessor: 'clients',
-			header: 'Clients',
+			accessor: 'end',
+			header: 'End',
 			plugins: {},
-			cell: ({ row }) => {
-				let project: ProjectWithClientsAndWorksessions | null = null;
-				let clients: Client[] | Client | null = null;
-				if (row.isData()) {
-					project = $projects_table.find((c) => c.id === row.original.id) ?? null;
-					clients = project?.clients ?? null;
-				}
-				return createRender(DataTableClientButton, { clients: clients });
+			cell: ({ value }) => {
+				return value ? df.format(value) : '∞';
 			}
 		}),
 		table.column({
-			accessor: 'worksessions',
-			header: 'Sessions',
-			plugins: {},
-			cell: ({ row }) => {
-				let project: ProjectWithClientsAndWorksessions | null = null;
-				let sessions: Worksession[] | Worksession | null = null;
-				if (row.isData()) {
-					project = $projects_table.find((c) => c.id === row.original.id) ?? null;
-					sessions = project?.worksessions ?? null;
-				}
-				return sessions ? sessions.length : 0;
-			}
-		}),
-		table.column({
-			accessor: 'description',
-			header: 'Description',
+			accessor: 'details',
+			header: 'Details',
 			plugins: {
 				sort: {
 					disable: true
@@ -127,7 +128,21 @@
 				}
 			},
 			cell: ({ value }) => {
-				return value ? value : 'No description provided';
+				return value ? value : 'No details provided';
+			}
+		}),
+		table.column({
+			accessor: 'clients',
+			header: 'Clients',
+			plugins: {},
+			cell: ({ row }) => {
+				let worksession: WorksessionWithProjectsAndClients | null = null;
+				let clients: Client[] | Client | null = null;
+				if (row.isData()) {
+					worksession = $worksessions_table.find((c) => c.id === row.original.id) ?? null;
+					clients = worksession?.clients ?? null;
+				}
+				return createRender(DataTableClientButton, { clients: clients });
 			}
 		}),
 		table.column({
@@ -192,7 +207,7 @@
 							{#each headerRow.cells as cell (cell.id)}
 								<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
 									<Table.Head {...attrs} class="text-left [&:has([role=checkbox])]:pl-3">
-										{#if cell.id === 'deadline' || cell.id === 'name' || cell.id === 'worksessions' || cell.id === 'clients'}
+										{#if cell.id === 'start' || cell.id === 'end' || cell.id === 'projects' || cell.id === 'clients' || cell.id === 'Duration'}
 											<Button variant="ghost" on:click={props.sort.toggle}>
 												<Render of={cell.render()} />
 												<ArrowUpDown class={'ml-2 h-4 w-4'} />
@@ -214,16 +229,12 @@
 							{#each row.cells as cell (cell.id)}
 								<Subscribe attrs={cell.attrs()} let:attrs>
 									<Table.Cell {...attrs}>
-										{#if cell.id === 'description'}
+										{#if cell.id === 'details'}
 											<div class="max-w-sm">
 												<Render of={cell.render()} />
 											</div>
 										{:else if cell.id === 'id'}
 											<div class="px-1">
-												<Render of={cell.render()} />
-											</div>
-										{:else if cell.id === 'clients'}
-											<div class="p-0">
 												<Render of={cell.render()} />
 											</div>
 										{:else}

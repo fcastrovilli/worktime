@@ -1,13 +1,14 @@
 <script lang="ts">
 	import NewSessionForm from './new_session_form.svelte';
-	import Card from '$lib/components/crud/card.svelte';
-	import CardContainer from '$lib/components/crud/card_container.svelte';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Label } from '$lib/components/ui/label';
-	import { calculateElapsedTime } from '$lib/basic_utils';
+	// import Card from '$lib/components/crud/card.svelte';
+	// import CardContainer from '$lib/components/crud/card_container.svelte';
+	// import { Button } from '$lib/components/ui/button/index.js';
+	// import { Label } from '$lib/components/ui/label';
+	// import { calculateElapsedTime } from '$lib/basic_utils';
+	import SessionsDataTable from '$lib/components/crud/tables/sessions_data_table.svelte';
 
 	export let data;
-	$: sessions = data.worksessions;
+	$: worksessions = data.worksessions;
 </script>
 
 <div class="container flex flex-col items-center justify-center gap-4 py-5">
@@ -15,7 +16,8 @@
 		<h1 class="text-4xl font-semibold">Sessions</h1>
 		<NewSessionForm data={data.form} projects={data.projects} />
 	</div>
-	<CardContainer>
+	<SessionsDataTable {worksessions} />
+	<!-- <CardContainer>
 		{#if sessions.length > 0}
 			{#each sessions as session, i}
 				<Card>
@@ -31,14 +33,6 @@
 					</div>
 					<div slot="content" class="flex flex-col">
 						<p>{session.details}</p>
-						<!-- <p>
-							Start: {session.start.toLocaleDateString()}
-							{session.start.toLocaleTimeString()}
-						</p>
-
-						{#if session.end}
-							<p>End: {session.end.toLocaleDateString()} {session.end.toLocaleTimeString()}</p>
-						{/if} -->
 					</div>
 					<div slot="footer">
 						<Button variant="default" class="w-full" href="/sessions/{session.id}">Show</Button>
@@ -48,5 +42,5 @@
 		{:else}
 			<p>No sessions found</p>
 		{/if}
-	</CardContainer>
+	</CardContainer> -->
 </div>
