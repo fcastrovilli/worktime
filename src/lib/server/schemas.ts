@@ -127,14 +127,14 @@ export type User = InferSelectModel<typeof usersTable>;
 export type Client = InferSelectModel<typeof clientsTable>;
 export type ClientWithProjects = Client & { projects: Project[] };
 export type Project = InferSelectModel<typeof projectsTable>;
-export type ProjectWithClients = Project & { clients: Client[] };
-export type ProjectWithWorksessions = Project & { worksessions: Worksession[] };
-export type ProjectWithClientsAndWorksessions = Project & { clients: Client[] } & {
-	worksessions: Worksession[];
+export type ProjectWithClients = Project & { clients: Client[] | Client };
+export type ProjectWithWorksessions = Project & { worksessions: Worksession[] | Worksession };
+export type ProjectWithClientsAndWorksessions = Project & { clients: Client[] | Client } & {
+	worksessions: Worksession[] | Worksession;
 };
 export type Worksession = InferSelectModel<typeof worksessionsTable>;
-export type WorksessionWithProjects = Worksession & { projects: Project[] };
-export type WorksessionWithClients = Worksession & { clients: Client[] };
-export type WorksessionWithProjectsAndClients = Worksession & { projects: Project[] } & {
-	clients: Client[];
+export type WorksessionWithProjects = Worksession & { projects: Project[] | Project };
+export type WorksessionWithClients = Worksession & { clients: Client[] | Client };
+export type WorksessionWithProjectsAndClients = Worksession & { projects: Project[] | Project } & {
+	clients: Client[] | Client;
 };
