@@ -112,7 +112,7 @@
 					project = $projects_table.find((c) => c.id === row.original.id) ?? null;
 					sessions = project?.worksessions ?? null;
 				}
-				return sessions ? sessions.length : 0;
+				return sessions ? (Array.isArray(sessions) ? sessions.length : 0) : 0;
 			}
 		}),
 		table.column({

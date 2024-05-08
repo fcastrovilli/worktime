@@ -1,10 +1,5 @@
 <script lang="ts">
-	import type {
-		Client,
-		Project,
-		Worksession,
-		WorksessionWithProjectsAndClients
-	} from '$lib/server/schemas';
+	import type { Client, Project, WorksessionWithProjectsAndClients } from '$lib/server/schemas';
 	import { writable } from 'svelte/store';
 	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
 	import * as Table from '$lib/components/ui/table';
