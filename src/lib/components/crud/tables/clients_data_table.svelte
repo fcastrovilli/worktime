@@ -114,7 +114,11 @@
 			accessor: ({ id }) => id,
 			header: '',
 			cell: ({ value }) => {
-				return createRender(DataTableActions, { id: value });
+				return createRender(DataTableActions, {
+					id: value,
+					formAction: '/clients?/deleteClient',
+					item: 'client'
+				});
 			},
 			plugins: {
 				sort: {

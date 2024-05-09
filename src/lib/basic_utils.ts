@@ -24,9 +24,20 @@ export type BasicProjectWithClients = {
 	id: string;
 	name: string;
 	slug: string;
-	clients: {
+	clients: BasicType;
+};
+
+export type BasicProjectWithClientsAndWorksessions = {
+	id: string;
+	name: string;
+	slug: string;
+	clients: BasicType;
+	worksessions: {
 		id: string;
-		name: string;
-		slug: string;
-	};
-}[];
+		start: Date;
+		end: Date;
+		details: string;
+		projects: BasicType;
+		clients: BasicType;
+	}[];
+};

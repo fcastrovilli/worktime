@@ -6,6 +6,7 @@ import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import slugify from 'slugify';
+import { and, eq } from 'drizzle-orm';
 
 export async function createClientAction(event: RequestEvent) {
 	if (!event.locals.user) throw redirect(302, '/signup');
@@ -95,29 +96,62 @@ export async function createWorksessionAction(event: RequestEvent) {
 	};
 }
 
-// export async function deletePostAction(event: RequestEvent) {
-// 	if (!event.locals.user) redirect(302, '/login');
-// 	const form = await superValidate(event.url, zod(deletePostSchema));
+export async function deleteWorksessionAction(event: RequestEvent) {
+	if (!event.locals.user) throw redirect(302, '/signup');
+	const form = await event.request.formData();
+	const id = form.get('id') as string;
+	if (!id) throw fail(400, { message: 'Invalid id' });
+	const worksession = await db.query.worksessionsTable.findFirst({
+		where: and(eq(worksessionsTable.user_id, event.locals.user.id), eq(worksessionsTable.id, id))
+	});
+	if (!worksession || worksession.user_id !== event.locals.user.id) {
+		return fail(401, {
+			message: 'You are not allowed to delete this worksession.'
+		});
+	}
+	await db.delete(worksessionsTable).where(eq(worksessionsTable.id, id));
+	return {
+		message: 'Worksession deleted.'
+	};
+}
 
-// 	if (!form.valid) {
-// 		setError(form, '', 'Error deleting post');
-// 		return {
-// 			deletePostForm: form
-// 		};
-// 	}
+export async function deleteProjectAction(event: RequestEvent) {
+	if (!event.locals.user) throw redirect(302, '/signup');
+	const form = await event.request.formData();
+	const id = form.get('id') as string;
+	if (!id) throw fail(400, { message: 'Invalid id' });
+	const project = await db.query.projectsTable.findFirst({
+		where: and(eq(projectsTable.user_id, event.locals.user.id), eq(projectsTable.id, id))
+	});
+	if (!project || project.user_id !== event.locals.user.id) {
+		return fail(401, {
+			message: 'You are not allowed to delete this project.'
+		});
+	}
+	await db.delete(projectsTable).where(eq(projectsTable.id, id));
+	return {
+		message: `${project.name} deleted.`
+	};
+}
 
-// 	const post = await getPostById(form.data.id, event.locals.user.id);
-
-// 	if (!post || post.userId !== event.locals.user.id) {
-// 		error(401, 'You are not allowed to delete this post.');
-// 	}
-
-// 	await db.delete(postsTable).where(eq(postsTable.id, form.data.id));
-
-// 	return {
-// 		deletePostForm: form
-// 	};
-// }
+export async function deleteClientAction(event: RequestEvent) {
+	if (!event.locals.user) throw redirect(302, '/signup');
+	const form = await event.request.formData();
+	const id = form.get('id') as string;
+	if (!id) throw fail(400, { message: 'Invalid id' });
+	const client = await db.query.clientsTable.findFirst({
+		where: and(eq(clientsTable.user_id, event.locals.user.id), eq(clientsTable.id, id))
+	});
+	if (!client || client.user_id !== event.locals.user.id) {
+		return fail(401, {
+			message: 'You are not allowed to delete this client.'
+		});
+	}
+	await db.delete(clientsTable).where(eq(clientsTable.id, id));
+	return {
+		message: `${client.name} deleted.`
+	};
+}
 
 // export async function updatePostAction(event: RequestEvent) {
 // 	if (!event.locals.user) redirect(302, '/login');

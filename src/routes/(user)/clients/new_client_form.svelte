@@ -41,7 +41,7 @@
 >
 	<Plus slot="trigger" size={35} />
 	<div slot="form">
-		<form method="POST" action="?/createClient" use:enhance>
+		<form method="POST" action="/clients?/createClient" use:enhance>
 			<Form.Field {form} name="name">
 				<Form.Control let:attrs>
 					<Form.Label>Client Name</Form.Label>

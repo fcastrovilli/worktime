@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 import { clientsTable } from '$lib/server/schemas';
 import { redirect, type Actions } from '@sveltejs/kit';
@@ -11,7 +11,7 @@ import { createProjectAction } from '$lib/server/crud/actions';
 export const load: PageServerLoad = async ({ locals, params }) => {
 	if (!locals.user) throw redirect(302, '/signup');
 	const client = await db.query.clientsTable.findFirst({
-		where: eq(clientsTable.slug, params.client),
+		where: and(eq(clientsTable.slug, params.client), eq(clientsTable.user_id, locals.user.id)),
 		with: {
 			projects: {
 				with: {

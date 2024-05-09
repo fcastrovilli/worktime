@@ -25,6 +25,12 @@
 			document.getElementById(triggerId)?.focus();
 		});
 	}
+	let selectedValue = '';
+
+	if (!Array.isArray(clients)) {
+		selectedValue = clients.name;
+		$formData.client = clients.id;
+	}
 
 	$: selectedValue = Array.isArray(clients)
 		? clients.find((f) => f.id === $formData.client)?.name ?? 'Select a client'

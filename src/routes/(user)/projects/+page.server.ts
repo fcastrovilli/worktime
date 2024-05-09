@@ -6,7 +6,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { projectsTable } from '$lib/server/schemas.js';
 import { asc, eq } from 'drizzle-orm';
 
-import { createProjectAction } from '$lib/server/crud/actions.js';
+import { createProjectAction, deleteProjectAction } from '$lib/server/crud/actions.js';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -35,5 +35,6 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	createProject: createProjectAction
+	createProject: createProjectAction,
+	deleteProject: deleteProjectAction
 };

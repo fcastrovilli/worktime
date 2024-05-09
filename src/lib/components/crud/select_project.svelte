@@ -26,6 +26,13 @@
 		});
 	}
 
+	let selectedValue = '';
+
+	if (!Array.isArray(projects)) {
+		selectedValue = projects.name;
+		$formData.project = projects.id;
+	}
+
 	$: selectedValue = Array.isArray(projects)
 		? projects.find((f) => f.id === $formData.project)?.name ?? 'Select a project'
 		: projects.name;

@@ -4,7 +4,7 @@
 	import Card from './card.svelte';
 	import { Play, Pause } from 'lucide-svelte';
 	import { calculateElapsedTime } from '$lib/basic_utils';
-	let title = 'New Session';
+	let title = 'Start Session';
 	let running: boolean = false;
 	let startTime: number | null = null;
 	let stopTime: number | null = null;
@@ -42,7 +42,7 @@
 
 <CardContainer>
 	<Card {title}>
-		<p slot="description">Create a new session</p>
+		<p slot="description">You can pause the session at any time.</p>
 		<div slot="content" class="flex flex-col items-center justify-center gap-4">
 			<Button
 				variant="outline"

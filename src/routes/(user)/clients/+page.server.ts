@@ -6,7 +6,7 @@ import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { clientsTable } from '$lib/server/schemas.js';
 import { asc, eq } from 'drizzle-orm';
-import { createClientAction } from '$lib/server/crud/actions.js';
+import { createClientAction, deleteClientAction } from '$lib/server/crud/actions.js';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) throw redirect(302, '/signup');
@@ -24,5 +24,6 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	createClient: createClientAction
+	createClient: createClientAction,
+	deleteClient: deleteClientAction
 };

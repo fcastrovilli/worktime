@@ -45,7 +45,7 @@
 >
 	<Plus slot="trigger" size={35} />
 	<div slot="form">
-		<form method="POST" action="?/createProject" use:enhance>
+		<form method="POST" action="/projects?/createProject" use:enhance>
 			<Form.Field {form} name="name">
 				<Form.Control let:attrs>
 					<Form.Label>Project Name</Form.Label>

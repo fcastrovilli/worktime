@@ -20,16 +20,18 @@
 
 <div class="container flex flex-col items-center justify-center gap-4 py-10">
 	{#if client}
-		<h1 class="text-4xl font-semibold">{client.name}</h1>
-		<p>{client.email ? client.email : 'No email'}</p>
-		<p>{client.website ? client.website : 'No website'}</p>
-
-		<p class="text-lg">{client.details ? client.details : 'No details'}</p>
-
-		<h3 class="py-5 text-2xl font-semibold">
-			Projects <small class="text-sm text-muted-foreground">({client.projects.length})</small>
-		</h3>
-		<NewProjectForm data={data.createProjectForm} clients={client_clean} />
+		<div class="flex flex-col items-center justify-center gap-4">
+			<h1 class="text-5xl font-semibold">{client.name}</h1>
+			<p>{client.email ? client.email : 'No email'}</p>
+			<p>{client.website ? client.website : 'No website'}</p>
+			<p class="text-lg">{client.details ? client.details : 'No details'}</p>
+		</div>
+		<div class="flex items-center justify-center gap-4 py-5">
+			<h3 class="py-5 text-2xl font-semibold">
+				All Projects <small class="text-sm text-muted-foreground">({client.projects.length})</small>
+			</h3>
+			<NewProjectForm data={data.createProjectForm} clients={client_clean} />
+		</div>
 		{#if client.projects.length > 0}
 			<CardContainer>
 				{#each client.projects as project}

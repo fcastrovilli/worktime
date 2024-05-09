@@ -6,7 +6,7 @@ import { worksessionsTable, type WorksessionWithProjectsAndClients } from '$lib/
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { createWorksessionSchema } from '$lib/zod-schemas';
-import { createWorksessionAction } from '$lib/server/crud/actions';
+import { createWorksessionAction, deleteWorksessionAction } from '$lib/server/crud/actions';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) throw redirect(302, '/signup');
@@ -42,10 +42,11 @@ export const load: PageServerLoad = async ({ locals }) => {
 	return {
 		worksessions,
 		projects,
-		form: await superValidate(zod(createWorksessionSchema))
+		createWorksessionForm: await superValidate(undefined, zod(createWorksessionSchema))
 	};
 };
 
 export const actions: Actions = {
-	createWorksession: createWorksessionAction
+	createWorksession: createWorksessionAction,
+	deleteWorksession: deleteWorksessionAction
 };

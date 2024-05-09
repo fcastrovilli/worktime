@@ -2,8 +2,12 @@
 	import Ellipsis from 'lucide-svelte/icons/ellipsis';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { Button } from '$lib/components/ui/button';
+	import DeleteItem from '../delete_item.svelte';
 
 	export let id: string;
+	export let item: string;
+	export let formAction: string;
+	let open = false;
 </script>
 
 <DropdownMenu.Root>
@@ -16,12 +20,12 @@
 	<DropdownMenu.Content>
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>
-			<DropdownMenu.Item on:click={() => navigator.clipboard.writeText(id)}>
-				Copy payment ID
-			</DropdownMenu.Item>
+			<DropdownMenu.Item>View</DropdownMenu.Item>
+			<DropdownMenu.Item>Edit</DropdownMenu.Item>
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />
-		<DropdownMenu.Item>View customer</DropdownMenu.Item>
-		<DropdownMenu.Item>View payment details</DropdownMenu.Item>
+		<DropdownMenu.Item on:click={() => (open = true)}>Delete</DropdownMenu.Item>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
+
+<DeleteItem {id} {formAction} {item} bind:open />

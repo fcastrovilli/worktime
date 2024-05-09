@@ -8,11 +8,18 @@
 	import { Plus } from 'lucide-svelte';
 	import Panel from '$lib/components/crud/panel.svelte';
 	import HourPicker from './hour_picker.svelte';
-	import type { BasicProjectWithClients } from '$lib/basic_utils';
+	import type {
+		BasicProjectWithClients,
+		BasicProjectWithClientsAndWorksessions
+	} from '$lib/basic_utils';
 	import SelectProject from '$lib/components/crud/select_project.svelte';
 
 	export let data: SuperValidated<Infer<CreateWorksession>>;
-	export let projects: BasicProjectWithClients;
+	export let projects:
+		| BasicProjectWithClients
+		| BasicProjectWithClientsAndWorksessions
+		| BasicProjectWithClients[]
+		| BasicProjectWithClientsAndWorksessions[];
 	let open = false;
 
 	const form = superForm(data, {
@@ -38,7 +45,11 @@
 
 	$: {
 		if ($formData.project) {
-			$formData.client = projects.find((p) => p.id === $formData.project)?.clients.id ?? '';
+			if (Array.isArray(projects)) {
+				$formData.project = projects.find((p) => p.id === $formData.project)?.id ?? '';
+			} else {
+				$formData.client = projects.clients.id; // projects.find((p) => p.id === $formData.project)?.clients.id ?? '';
+			}
 		}
 	}
 </script>
@@ -51,7 +62,7 @@
 >
 	<Plus slot="trigger" size={35} />
 	<div slot="form">
-		<form method="POST" action="?/createWorksession" use:enhance>
+		<form method="POST" action="/sessions?/createWorksession" use:enhance>
 			<input type="hidden" name="client" value={$formData.client} />
 			<Form.Field {form} name="project">
 				<Form.Control let:attrs>

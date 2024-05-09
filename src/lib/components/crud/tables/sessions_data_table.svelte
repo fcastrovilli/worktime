@@ -144,7 +144,11 @@
 			accessor: ({ id }) => id,
 			header: '',
 			cell: ({ value }) => {
-				return createRender(DataTableActions, { id: value });
+				return createRender(DataTableActions, {
+					id: value,
+					formAction: '/sessions?/deleteWorksession',
+					item: 'worksession'
+				});
 			},
 			plugins: {
 				sort: {

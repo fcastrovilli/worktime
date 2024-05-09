@@ -39,7 +39,7 @@ export const sessionsTable = pgTable('session', {
 	id: text('id').notNull().primaryKey(),
 	userId: text('user_id')
 		.notNull()
-		.references(() => usersTable.id),
+		.references(() => usersTable.id, { onDelete: 'cascade' }),
 	expiresAt: timestamp('expires_at', {
 		withTimezone: true,
 		mode: 'date'
@@ -55,7 +55,7 @@ export const clientsTable = pgTable('client', {
 	slug: text('slug').notNull().unique(),
 	user_id: text('user_id')
 		.notNull()
-		.references(() => usersTable.id),
+		.references(() => usersTable.id, { onDelete: 'cascade' }),
 	...timestamps
 });
 
@@ -77,13 +77,13 @@ export const worksessionsTable = pgTable('worksession', {
 	}),
 	project_id: text('project_id')
 		.notNull()
-		.references(() => projectsTable.id),
+		.references(() => projectsTable.id, { onDelete: 'cascade' }),
 	client_id: text('client_id')
 		.notNull()
-		.references(() => clientsTable.id),
+		.references(() => clientsTable.id, { onDelete: 'cascade' }),
 	user_id: text('user_id')
 		.notNull()
-		.references(() => usersTable.id),
+		.references(() => usersTable.id, { onDelete: 'cascade' }),
 	...timestamps
 });
 
