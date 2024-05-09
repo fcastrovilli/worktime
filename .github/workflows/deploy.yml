@@ -56,5 +56,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd ${{ secrets.SSH_LOCAL_PATH }}
-            docker compose -f docker-compose.prod.yml down
-            docker compose -f docker-compose.prod.yml up -d --build
+            whoami
+            ls -al
+          #   docker compose -f docker-compose.prod.yml down
+          #   docker compose -f docker-compose.prod.yml up -d --build
