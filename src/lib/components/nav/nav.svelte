@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { GithubLogo } from 'svelte-radix';
 	export let user;
 	import Button from '../ui/button/button.svelte';
 	import Breadcrumb from './breadcrumb.svelte';
@@ -17,7 +18,13 @@
 		{#if user}
 			<NavContent class="mx-6 hidden sm:block" />
 		{/if}
-		<div class="ml-auto flex items-center space-x-4">
+		<div class="ml-auto flex items-center space-x-2">
+			<Button
+				href="https://github.com/fcastrovilli/worktime"
+				target="_blank"
+				class="rounded-full p-2"
+				variant="ghost"><GithubLogo class="h-4 w-4" /></Button
+			>
 			{#if user}
 				<NavUser {user} />
 			{:else}
