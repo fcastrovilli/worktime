@@ -39,8 +39,8 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          source: ${{ steps.changed-files.outputs.all_changed_files }}
-          # source: .
+          # source: ${{ steps.changed-files.outputs.all_changed_files }}
+          source: .
           target: ${{ secrets.SSH_LOCAL_PATH }}
   deploy_backend:
     needs: copy-files-to-server
