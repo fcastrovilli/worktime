@@ -12,3 +12,13 @@ vite.config.ts.timestamp-*
 *.sqlite
 drizzle
 db_data
+.pnpm-store
+.git
+.gitignore
+.vscode
+.github
+README.md
+LICENSE
+Dockerfile
+docker-compose.yml
+docker-compose.prod.yml

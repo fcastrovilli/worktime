@@ -5,16 +5,13 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - data:/var/lib/postgresql/data
+      - ./db_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=S3cret
-      - POSTGRES_DB=worktime-db
-      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}']
       interval: 10s
       timeout: 5s
       retries: 5
-
-volumes:
-  data:

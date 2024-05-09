@@ -1,9 +1,9 @@
 {
-	"name": "work-drizzle",
+	"name": "worktime",
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "vite dev --mode development",
 		"build": "vite build",
 		"preview": "vite preview",
 		"test": "playwright test",
@@ -24,6 +24,7 @@
 		"@sveltejs/adapter-node": "^5.0.1",
 		"@sveltejs/kit": "^2.5.7",
 		"@sveltejs/vite-plugin-svelte": "^3.1.0",
+		"@types/d3-scale": "^4.0.8",
 		"@types/eslint": "^8.56.10",
 		"@types/pg": "^8.11.5",
 		"@typescript-eslint/eslint-plugin": "^7.8.0",
@@ -54,14 +55,12 @@
 	"type": "module",
 	"dependencies": {
 		"@internationalized/date": "^3.5.2",
-		"@neondatabase/serverless": "^0.9.1",
-		"@types/d3-scale": "^4.0.8",
-		"@types/ws": "^8.5.10",
 		"arctic": "^1.8.0",
 		"bits-ui": "^0.21.6",
 		"clsx": "^2.1.1",
 		"cmdk-sv": "^0.0.17",
 		"d3-scale": "^4.0.2",
+		"dotenv": "^16.4.5",
 		"formsnap": "^1.0.0",
 		"lucia": "^3.2.0",
 		"lucide-svelte": "^0.376.1",
@@ -72,7 +71,6 @@
 		"sveltekit-superforms": "^2.12.6",
 		"tailwind-merge": "^2.3.0",
 		"tailwind-variants": "^0.2.1",
-		"ws": "^8.17.0",
 		"zod": "^3.23.5"
 	}
 }
