@@ -12,15 +12,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      #    with:
-      #      fetch-depth: 0
 
-      #  - name: Get changed files
-      #    id: changed-files
-      #    uses: tj-actions/changed-files@v44
-      #    with:
-      #      since_last_remote_commit: true
-      #      separator: ','
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v35
+        with:
+          since_last_remote_commit: true
+          separator: ','
 
       - name: Create .env file
         run: |
@@ -28,11 +26,11 @@ jobs:
           echo "ORIGIN=${{ secrets.ORIGIN }}" >> .env
           echo "PORT=${{ secrets.PORT }}" >> .env
           echo "GH_CLIENT_ID=${{ secrets.GH_CLIENT_ID }}" >> .env
-          echo "GH_CLIENT_SECRET='${{ secrets.GH_CLIENT_SECRET }}'" >> .env
+          echo "GH_CLIENT_SECRET=${{ secrets.GH_CLIENT_SECRET }}" >> .env
           echo "DATABASE_URL='${{ secrets.DATABASE_URL }}'" >> .env
-          echo "POSTGRES_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}'" >> .env
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
           echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
-          echo "POSTGRES_USER='${{ secrets.POSTGRES_USER }}'" >> .env
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
 
       - name: Copy files to server
         uses: appleboy/scp-action@v0.1.7
@@ -41,6 +39,22 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          source: .
-          # source: ${{ steps.changed-files.outputs.all_changed_files }}
+          source: ${{ steps.changed-files.outputs.all_changed_files }}
+          # source: .
           target: ${{ secrets.SSH_LOCAL_PATH }}
+  deploy_backend:
+    needs: copy-files-to-server
+    runs-on: ubuntu-20.04
+    name: Deploy Docker Containers
+    steps:
+      - uses: appleboy/ssh-action@v1.0.3
+        name: remote docker-compose up via ssh
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd ${{ secrets.SSH_LOCAL_PATH }}
+            docker compose -f ./backend/docker-compose.prod.yml down
+            docker compose -f ./backend/docker-compose.prod.yml up -d --build
