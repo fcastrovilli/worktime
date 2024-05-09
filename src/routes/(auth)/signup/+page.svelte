@@ -18,6 +18,7 @@
 				isLoading = true;
 			}}
 			href="/signup/github"
+			rel="external"
 			variant="outline"
 			class="w-full"
 		>
