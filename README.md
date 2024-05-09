@@ -1,38 +1,21 @@
-# create-svelte
+# Worktime
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+A simple time tracking app for your projects.
 
-## Creating a project
+> [!WARNING]
+> This project is still under heavy development and a lot of features are missing.
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Stack
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+- SvelteKit
+- Typescript
+- DrizzleOrm
+- Tailwind CSS
+- shadcn-svelte
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+## TODO
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+- [ ] Update & Delete Actions
+- [ ] Make `session_runner` to actually create a session (edit `worksessionTable` to add a `duration` numeric column)
+- [ ] Create a `/dashboard` page for data visualization
+- [ ] Improve CD/CI pipeline (Coolify?)
