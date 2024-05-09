@@ -53,10 +53,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.PORT }}
+          port: ${{ secrets.SSH_PORT }}
           script: |
-            cd ${{ secrets.SSH_LOCAL_PATH }}
-            whoami
-            ls -al
-          #   docker compose -f docker-compose.prod.yml down
-          #   docker compose -f docker-compose.prod.yml up -d --build
+            docker compose -f docker-compose.prod.yml down
+            docker compose -f docker-compose.prod.yml up -d --build
