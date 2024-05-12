@@ -4,11 +4,13 @@ FROM node:20-alpine3.19 AS base
 ARG GH_CLIENT_ID
 ARG GH_CLIENT_SECRET
 ARG DATABASE_URL
+ARG PORT
 
 # set env
 ENV GH_CLIENT_ID $GH_CLIENT_ID
 ENV GH_CLIENT_SECRET $GH_CLIENT_SECRET
 ENV DATABASE_URL $DATABASE_URL
+ENV PORT $PORT
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -27,4 +29,4 @@ RUN pnpm run build
 FROM base
 COPY --from=prod-deps /app/node_modules /app/node_modules
 COPY --from=build /app/build /app/build
-EXPOSE 8080
+EXPOSE $PORT
