@@ -12,10 +12,10 @@ A simple time tracking app for your projects.
 - DrizzleOrm
 - Tailwind CSS
 - shadcn-svelte
+- Coolify CD/CI
 
 ## TODO
 
-- [ ] Update & Delete Actions
+- [ ] Update Actions
 - [ ] Make `session_runner` to actually create a session (edit `worksessionTable` to add a `duration` numeric column)
 - [ ] Create a `/dashboard` page for data visualization
-- [ ] Improve CD/CI pipeline (Coolify?)
