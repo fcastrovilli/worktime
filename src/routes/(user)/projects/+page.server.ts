@@ -1,12 +1,9 @@
 import { db } from '$lib/server/db';
 import { redirect, type Actions } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms';
-import { createProjectSchema } from '$lib/zod-schemas.js';
-import { zod } from 'sveltekit-superforms/adapters';
 import { projectsTable } from '$lib/server/schemas.js';
 import { asc, eq } from 'drizzle-orm';
 
-import { createProjectAction, deleteProjectAction } from '$lib/server/crud/actions.js';
+import { deleteProjectAction, upsertProjectAction } from '$lib/server/crud/actions.js';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -19,22 +16,12 @@ export const load: PageServerLoad = async ({ locals }) => {
 		},
 		orderBy: [asc(projectsTable.deadline)]
 	});
-	const clients = await db.query.clientsTable.findMany({
-		where: eq(projectsTable.user_id, locals.user.id),
-		columns: {
-			id: true,
-			name: true,
-			slug: true
-		}
-	});
 	return {
-		projects,
-		clients,
-		form: await superValidate(zod(createProjectSchema))
+		projects
 	};
 };
 
 export const actions: Actions = {
-	createProject: createProjectAction,
+	upsertProject: upsertProjectAction,
 	deleteProject: deleteProjectAction
 };

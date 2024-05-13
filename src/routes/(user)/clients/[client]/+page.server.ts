@@ -3,10 +3,10 @@ import { and, eq } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 import { clientsTable } from '$lib/server/schemas';
 import { redirect, type Actions } from '@sveltejs/kit';
-import { createProjectSchema } from '$lib/zod-schemas';
+import { upsertClientSchema, upsertProjectSchema } from '$lib/zod-schemas';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { createProjectAction } from '$lib/server/crud/actions';
+import { upsertProjectAction } from '$lib/server/crud/actions';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	if (!locals.user) throw redirect(302, '/signup');
@@ -35,10 +35,11 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	if (!client) throw redirect(302, '/clients');
 	return {
 		client,
-		createProjectForm: await superValidate(zod(createProjectSchema))
+		upsertProject: await superValidate(zod(upsertProjectSchema)),
+		upsertClient: await superValidate(zod(upsertClientSchema))
 	};
 };
 
 export const actions: Actions = {
-	createProject: createProjectAction
+	upsertProject: upsertProjectAction
 };

@@ -7,6 +7,8 @@
 	import { calculateElapsedTime } from '$lib/basic_utils';
 	import SessionRunner from '$lib/components/crud/session_runner.svelte';
 	import NewSessionForm from '../../sessions/new_session_form.svelte';
+	import UpsertProjectForm from '$lib/components/crud/upsert_project_form.svelte';
+	import { Settings } from 'lucide-svelte';
 
 	export let data: PageData;
 
@@ -16,7 +18,12 @@
 <div class="container flex flex-col items-center justify-center gap-4 py-10">
 	{#if project}
 		<div class="flex flex-col items-center justify-center gap-4">
-			<h1 class="text-5xl font-semibold">{project.name}</h1>
+			<div class="flex flex-row items-center justify-center gap-4">
+				<h1 class="text-5xl font-semibold">{project.name}</h1>
+				<UpsertProjectForm data={data.upsertProject} {project} clients={data.clients}>
+					<Settings size={35} slot="trigger" />
+				</UpsertProjectForm>
+			</div>
 			<h3><a href="/clients/{project.clients.slug}">{project.clients.name}</a></h3>
 			<p>
 				{project.deadline ? 'Deadline: ' + project.deadline.toLocaleDateString() : 'No deadline'}

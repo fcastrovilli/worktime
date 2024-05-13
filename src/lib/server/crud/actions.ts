@@ -1,37 +1,131 @@
 import { db } from '../db';
 import { clientsTable, projectsTable, worksessionsTable } from '../schemas';
 import { generateId } from 'lucia';
-import { createClientSchema, createProjectSchema, createWorksessionSchema } from '$lib/zod-schemas';
+import {
+	upsertClientSchema,
+	createProjectSchema,
+	createWorksessionSchema,
+	upsertProjectSchema
+} from '$lib/zod-schemas';
 import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import slugify from 'slugify';
 import { and, eq } from 'drizzle-orm';
 
-export async function createClientAction(event: RequestEvent) {
+export async function upsertClientAction(event: RequestEvent) {
 	if (!event.locals.user) throw redirect(302, '/signup');
-	const form = await superValidate(event, zod(createClientSchema));
+	const form = await superValidate(event, zod(upsertClientSchema));
 	if (!form.valid) {
 		return fail(400, {
-			createClientForm: form
+			upsertClientForm: form
 		});
 	}
+	const slug = slugify(form.data.name).toLowerCase();
 	try {
-		await db.insert(clientsTable).values({
-			id: generateId(15),
-			user_id: event.locals.user.id,
-			slug: slugify(form.data.name).toLowerCase(),
-			...form.data,
-			createdAt: new Date(),
-			updatedAt: new Date()
+		const client = await db.query.clientsTable.findFirst({
+			where: and(
+				eq(clientsTable.user_id, event.locals.user.id),
+				eq(clientsTable.id, form.data.id ?? '')
+			)
 		});
+		if (client) {
+			await db
+				.update(clientsTable)
+				.set({
+					slug: slug,
+					name: form.data.name,
+					details: form.data.details,
+					email: form.data.email,
+					website: form.data.website,
+					updatedAt: new Date()
+				})
+				.where(
+					and(
+						eq(clientsTable.user_id, event.locals.user.id),
+						eq(clientsTable.id, form.data.id ?? '')
+					)
+				);
+		} else {
+			await db.insert(clientsTable).values({
+				id: generateId(15),
+				user_id: event.locals.user.id,
+				slug: slug,
+				name: form.data.name,
+				details: form.data.details,
+				email: form.data.email,
+				website: form.data.website,
+				createdAt: new Date(),
+				updatedAt: new Date()
+			});
+		}
 	} catch (error) {
-		return fail(400, { createClientForm: form });
+		console.log(error);
+		return fail(400, { upsertClientForm: form });
 	}
 
 	return {
-		createClientForm: form,
-		client_name: form.data.name
+		upsertClientForm: form,
+		client_name: form.data.name,
+		client_slug: slug
+	};
+}
+
+export async function upsertProjectAction(event: RequestEvent) {
+	if (!event.locals.user) throw redirect(302, '/signup');
+	const form = await superValidate(event, zod(upsertProjectSchema));
+	if (!form.valid) {
+		return fail(400, {
+			upsertProjectForm: form
+		});
+	}
+
+	const slug = slugify(form.data.name).toLowerCase();
+	try {
+		const project = await db.query.projectsTable.findFirst({
+			where: and(
+				eq(projectsTable.user_id, event.locals.user.id),
+				eq(projectsTable.id, form.data.id ?? '')
+			)
+		});
+		if (project) {
+			await db
+				.update(projectsTable)
+				.set({
+					name: form.data.name,
+					description: form.data.description,
+					slug: slug,
+					client_id: form.data.client,
+					deadline: form.data.deadline ? new Date(form.data.deadline) : null,
+					updatedAt: new Date()
+				})
+				.where(
+					and(
+						eq(projectsTable.user_id, event.locals.user.id),
+						eq(projectsTable.id, form.data.id ?? '')
+					)
+				);
+		} else {
+			await db.insert(projectsTable).values({
+				id: generateId(15),
+				user_id: event.locals.user.id,
+				name: form.data.name,
+				description: form.data.description,
+				client_id: form.data.client,
+				slug: slug,
+				deadline: form.data.deadline ? new Date(form.data.deadline) : null,
+				createdAt: new Date(),
+				updatedAt: new Date()
+			});
+		}
+	} catch (error) {
+		return fail(400, { upsertProjectForm: form });
+	}
+
+	return {
+		upsertProjectForm: form,
+		project_name: form.data.name,
+		project_slug: slug
 	};
 }
 
@@ -109,7 +203,9 @@ export async function deleteWorksessionAction(event: RequestEvent) {
 			message: 'You are not allowed to delete this worksession.'
 		});
 	}
-	await db.delete(worksessionsTable).where(eq(worksessionsTable.id, id));
+	await db
+		.delete(worksessionsTable)
+		.where(and(eq(worksessionsTable.id, id), eq(worksessionsTable.user_id, event.locals.user.id)));
 	return {
 		message: 'Worksession deleted.'
 	};
@@ -128,7 +224,14 @@ export async function deleteProjectAction(event: RequestEvent) {
 			message: 'You are not allowed to delete this project.'
 		});
 	}
-	await db.delete(projectsTable).where(eq(projectsTable.id, id));
+	await db
+		.delete(worksessionsTable)
+		.where(
+			and(eq(worksessionsTable.project_id, id), eq(worksessionsTable.user_id, event.locals.user.id))
+		);
+	await db
+		.delete(projectsTable)
+		.where(and(eq(projectsTable.id, id), eq(projectsTable.user_id, event.locals.user.id)));
 	return {
 		message: `${project.name} deleted.`
 	};
@@ -147,7 +250,17 @@ export async function deleteClientAction(event: RequestEvent) {
 			message: 'You are not allowed to delete this client.'
 		});
 	}
-	await db.delete(clientsTable).where(eq(clientsTable.id, id));
+	await db
+		.delete(worksessionsTable)
+		.where(
+			and(eq(worksessionsTable.client_id, id), eq(worksessionsTable.user_id, event.locals.user.id))
+		);
+	await db
+		.delete(projectsTable)
+		.where(and(eq(projectsTable.client_id, id), eq(projectsTable.user_id, event.locals.user.id)));
+	await db
+		.delete(clientsTable)
+		.where(and(eq(clientsTable.id, id), eq(clientsTable.user_id, event.locals.user.id)));
 	return {
 		message: `${client.name} deleted.`
 	};

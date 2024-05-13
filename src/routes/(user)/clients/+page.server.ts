@@ -1,12 +1,12 @@
 import { db } from '$lib/server/db';
 import { redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types.js';
-import { createClientSchema } from '$lib/zod-schemas.js';
+import { upsertClientSchema } from '$lib/zod-schemas.js';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { clientsTable } from '$lib/server/schemas.js';
-import { asc, eq } from 'drizzle-orm';
-import { createClientAction, deleteClientAction } from '$lib/server/crud/actions.js';
+import { desc, eq } from 'drizzle-orm';
+import { deleteClientAction, upsertClientAction } from '$lib/server/crud/actions.js';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) throw redirect(302, '/signup');
@@ -15,15 +15,15 @@ export const load: PageServerLoad = async ({ locals }) => {
 		with: {
 			projects: true
 		},
-		orderBy: asc(clientsTable.createdAt)
+		orderBy: desc(clientsTable.createdAt)
 	});
 	return {
 		clients,
-		form: await superValidate(zod(createClientSchema))
+		upsertClient: await superValidate(zod(upsertClientSchema))
 	};
 };
 
 export const actions: Actions = {
-	createClient: createClientAction,
+	upsertClient: upsertClientAction,
 	deleteClient: deleteClientAction
 };

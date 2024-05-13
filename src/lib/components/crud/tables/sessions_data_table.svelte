@@ -3,7 +3,7 @@
 	import { writable } from 'svelte/store';
 	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
 	import * as Table from '$lib/components/ui/table';
-	import DataTableActions from './data_table_actions.svelte';
+	import SessionsTableActions from './sessions_table_actions.svelte';
 	import DataTableCheckbox from './data_table_checkbox.svelte';
 	import DataTableClientButton from './data_table_client_button.svelte';
 	import DataTableProjectButton from './data_table_project_button.svelte';
@@ -46,6 +46,10 @@
 
 	const hidableCols = ['start', 'end', 'details', 'clients', 'projects', 'Duration'];
 
+	let worksession: WorksessionWithProjectsAndClients | null = null;
+	let projects: Project[] | Project | null = null;
+	let clients: Client[] | Client | null = null;
+
 	const columns = table.createColumns([
 		table.column({
 			accessor: 'id',
@@ -70,9 +74,10 @@
 			header: 'Duration',
 			plugins: {},
 			cell: ({ row, id }) => {
-				let worksession: WorksessionWithProjectsAndClients | null = null;
 				if (row.isData()) {
 					worksession = $worksessions_table.find((c) => c.id === row.original.id) ?? null;
+					projects = worksession?.projects ?? null;
+					clients = worksession?.clients ?? null;
 				}
 				return worksession?.end
 					? calculateElapsedTime(worksession?.start, worksession?.end)
@@ -84,13 +89,7 @@
 			accessor: 'projects',
 			header: 'Projects',
 			plugins: {},
-			cell: ({ row }) => {
-				let worksession: WorksessionWithProjectsAndClients | null = null;
-				let projects: Project[] | Project | null = null;
-				if (row.isData()) {
-					worksession = $worksessions_table.find((c) => c.id === row.original.id) ?? null;
-					projects = worksession?.projects ?? null;
-				}
+			cell: () => {
 				return createRender(DataTableProjectButton, { projects: projects });
 			}
 		}),
@@ -130,24 +129,16 @@
 			accessor: 'clients',
 			header: 'Clients',
 			plugins: {},
-			cell: ({ row }) => {
-				let worksession: WorksessionWithProjectsAndClients | null = null;
-				let clients: Client[] | Client | null = null;
-				if (row.isData()) {
-					worksession = $worksessions_table.find((c) => c.id === row.original.id) ?? null;
-					clients = worksession?.clients ?? null;
-				}
+			cell: () => {
 				return createRender(DataTableClientButton, { clients: clients });
 			}
 		}),
 		table.column({
 			accessor: ({ id }) => id,
 			header: '',
-			cell: ({ value }) => {
-				return createRender(DataTableActions, {
-					id: value,
-					formAction: '/sessions?/deleteWorksession',
-					item: 'worksession'
+			cell: () => {
+				return createRender(SessionsTableActions, {
+					record: worksession
 				});
 			},
 			plugins: {

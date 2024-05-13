@@ -3,7 +3,7 @@
 	import { writable } from 'svelte/store';
 	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
 	import * as Table from '$lib/components/ui/table';
-	import DataTableActions from './data_table_actions.svelte';
+	import ProjectsTableActions from './projects_table_actions.svelte';
 	import DataTableCheckbox from './data_table_checkbox.svelte';
 	import DataTableProjectButton from './data_table_project_button.svelte';
 	import {
@@ -44,6 +44,10 @@
 
 	const hidableCols = ['name', 'deadline', 'description', 'clients', 'worksessions'];
 
+	let project: ProjectWithClientsAndWorksessions | null = null;
+	let clients: Client[] | Client | null = null;
+	let sessions: Worksession[] | Worksession | null = null;
+
 	const columns = table.createColumns([
 		table.column({
 			accessor: 'id',
@@ -68,9 +72,10 @@
 			header: 'Name',
 			plugins: {},
 			cell: ({ row }) => {
-				let project: ProjectWithClientsAndWorksessions | null = null;
 				if (row.isData()) {
 					project = $projects_table.find((c) => c.id === row.original.id) ?? null;
+					sessions = project?.worksessions ?? null;
+					clients = project?.clients ?? null;
 				}
 				return createRender(DataTableProjectButton, { projects: project });
 			}
@@ -91,13 +96,7 @@
 			accessor: 'clients',
 			header: 'Clients',
 			plugins: {},
-			cell: ({ row }) => {
-				let project: ProjectWithClientsAndWorksessions | null = null;
-				let clients: Client[] | Client | null = null;
-				if (row.isData()) {
-					project = $projects_table.find((c) => c.id === row.original.id) ?? null;
-					clients = project?.clients ?? null;
-				}
+			cell: () => {
 				return createRender(DataTableClientButton, { clients: clients });
 			}
 		}),
@@ -105,13 +104,7 @@
 			accessor: 'worksessions',
 			header: 'Sessions',
 			plugins: {},
-			cell: ({ row }) => {
-				let project: ProjectWithClientsAndWorksessions | null = null;
-				let sessions: Worksession[] | Worksession | null = null;
-				if (row.isData()) {
-					project = $projects_table.find((c) => c.id === row.original.id) ?? null;
-					sessions = project?.worksessions ?? null;
-				}
+			cell: () => {
 				return sessions ? (Array.isArray(sessions) ? sessions.length : 0) : 0;
 			}
 		}),
@@ -133,11 +126,9 @@
 		table.column({
 			accessor: ({ id }) => id,
 			header: '',
-			cell: ({ value }) => {
-				return createRender(DataTableActions, {
-					id: value,
-					formAction: '/projects?/deleteProject',
-					item: 'project'
+			cell: () => {
+				return createRender(ProjectsTableActions, {
+					record: project
 				});
 			},
 			plugins: {

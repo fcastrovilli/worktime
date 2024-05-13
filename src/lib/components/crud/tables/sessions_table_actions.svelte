@@ -3,11 +3,11 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { Button } from '$lib/components/ui/button';
 	import DeleteItem from '../delete_item.svelte';
+	import type { WorksessionWithProjectsAndClients } from '$lib/server/schemas';
+	export let record: WorksessionWithProjectsAndClients | null = null;
 
-	export let id: string;
-	export let item: string;
-	export let formAction: string;
-	let open = false;
+	let openDelete = false;
+	let openEdit = false;
 </script>
 
 <DropdownMenu.Root>
@@ -20,12 +20,18 @@
 	<DropdownMenu.Content>
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>
-			<DropdownMenu.Item>View</DropdownMenu.Item>
-			<DropdownMenu.Item>Edit</DropdownMenu.Item>
+			<DropdownMenu.Item on:click={() => (openEdit = true)}>Edit</DropdownMenu.Item>
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />
-		<DropdownMenu.Item on:click={() => (open = true)}>Delete</DropdownMenu.Item>
+		<DropdownMenu.Item on:click={() => (openDelete = true)}>Delete</DropdownMenu.Item>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
 
-<DeleteItem {id} {formAction} {item} bind:open />
+{#if record}
+	<DeleteItem
+		id={record.id}
+		formAction="/sessions?/deleteWorksession"
+		item="worksession"
+		bind:open={openDelete}
+	/>
+{/if}

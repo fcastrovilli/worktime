@@ -3,7 +3,7 @@
 	import { writable } from 'svelte/store';
 	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
 	import * as Table from '$lib/components/ui/table';
-	import DataTableActions from './data_table_actions.svelte';
+	import ClientsTableActions from './clients_table_actions.svelte';
 	import DataTableCheckbox from './data_table_checkbox.svelte';
 	import DataTableProjectButton from './data_table_project_button.svelte';
 	import DataTableClientButton from './data_table_client_button.svelte';
@@ -40,6 +40,8 @@
 
 	const hidableCols = ['email', 'name', 'details', 'website', 'projects'];
 
+	let client: ClientWithProjects | null = null;
+
 	const columns = table.createColumns([
 		table.column({
 			accessor: 'id',
@@ -64,7 +66,6 @@
 			header: 'Name',
 			plugins: {},
 			cell: ({ row }) => {
-				let client: ClientWithProjects | null = null;
 				if (row.isData()) {
 					client = $clients_table.find((c) => c.id === row.original.id) || null;
 				}
@@ -113,11 +114,9 @@
 		table.column({
 			accessor: ({ id }) => id,
 			header: '',
-			cell: ({ value }) => {
-				return createRender(DataTableActions, {
-					id: value,
-					formAction: '/clients?/deleteClient',
-					item: 'client'
+			cell: () => {
+				return createRender(ClientsTableActions, {
+					record: client
 				});
 			},
 			plugins: {
