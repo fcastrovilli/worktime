@@ -4,7 +4,8 @@
 	import Card from './card.svelte';
 	import { Play, Pause } from 'lucide-svelte';
 	import { calculateElapsedTime } from '$lib/basic_utils';
-	let title = 'Start Session';
+	import { Stop, Trash } from 'svelte-radix';
+	let title = 'New Session';
 	let running: boolean = false;
 	let startTime: number | null = null;
 	let stopTime: number | null = null;
@@ -41,21 +42,34 @@
 </script>
 
 <CardContainer>
-	<Card {title}>
+	<Card>
+		<div slot="title" class="flex items-center justify-between gap-4">
+			{title}
+			<Button size="icon" variant="ghost" class="rounded-full" disabled={!running}>
+				<Trash size={16} />
+			</Button>
+		</div>
 		<p slot="description">You can pause the session at any time.</p>
-		<div slot="content" class="flex flex-col items-center justify-center gap-4">
+		<div slot="content" class="flex flex-col items-center justify-center text-center text-7xl">
+			{elapsedString}
+			<small class="text-xs text-muted">25€/h</small>
+			<small class="text-xs text-muted-foreground">100€</small>
+		</div>
+		<div slot="footer" class="flex w-full items-center justify-center gap-4">
 			<Button
 				variant="outline"
 				class="h-full rounded-full p-4"
 				on:click={() => (running = !running)}
 			>
 				{#if running}
-					<Pause size={35} />
+					<Pause size={25} />
 				{:else}
-					<Play size={35} />
+					<Play size={25} />
 				{/if}
 			</Button>
+			<Button size="icon" class="rounded-full" disabled={!running}>
+				<Stop size={13} />
+			</Button>
 		</div>
-		<div slot="footer" class="flex items-center justify-center">Duration: {elapsedString}</div>
 	</Card>
 </CardContainer>
