@@ -6,7 +6,7 @@
 	import { page } from '$app/stores';
 
 	const pages: { href: string; title: string }[] = [
-		{ href: '/', title: 'Dashboard' },
+		{ href: '/dashboard', title: 'Dashboard' },
 		{ href: '/sessions', title: 'Sessions' },
 		{ href: '/projects', title: 'Projects' },
 		{ href: '/clients', title: 'Clients' }
@@ -19,7 +19,7 @@
 	{#each pages as page}
 		<a
 			href={page.href}
-			class="text-sm font-medium {currentPage.includes(page.href)
+			class="text-sm font-medium {currentPage.startsWith(page.href)
 				? ''
 				: 'text-muted-foreground'} transition-colors hover:text-primary"
 		>
