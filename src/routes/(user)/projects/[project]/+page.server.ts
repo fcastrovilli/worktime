@@ -13,7 +13,9 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		where: and(eq(projectsTable.slug, params.project), eq(projectsTable.user_id, locals.user.id)),
 		with: {
 			clients: true,
-			worksessions: true
+			worksessions: {
+				orderBy: (worksessions, { desc }) => [desc(worksessions.end)]
+			}
 		}
 	});
 	if (!project) throw redirect(302, '/projects');
