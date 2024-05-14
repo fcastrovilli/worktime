@@ -1,5 +1,5 @@
 import { redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from '../$types';
+import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
 import { projectsTable, sessionsTable } from '$lib/server/schemas';
 import { and, eq } from 'drizzle-orm';
@@ -10,7 +10,7 @@ import { upsertSessionSchema } from '$lib/zod-schemas';
 export const load: PageServerLoad = async ({ locals, params }) => {
 	if (!locals.user) throw redirect(302, '/signup');
 	const session = await db.query.sessionsTable.findFirst({
-		where: and(eq(sessionsTable.user_id, locals.user.id), eq(sessionsTable.id, params.sessionId)),
+		where: and(eq(sessionsTable.user_id, locals.user.id), eq(sessionsTable.id, params.session)),
 		with: {
 			projects: true,
 			clients: true
