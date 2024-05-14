@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Form from '$lib/components/ui/form';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
-	import { createWorksessionSchema, type CreateWorksession } from '$lib/zod-schemas.js';
+	import { createSessionSchema, type CreateSession } from '$lib/zod-schemas.js';
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
@@ -10,27 +10,27 @@
 	import HourPicker from './hour_picker.svelte';
 	import type {
 		BasicProjectWithClients,
-		BasicProjectWithClientsAndWorksessions
+		BasicProjectWithClientsAndSessions
 	} from '$lib/basic_utils';
 	import SelectProject from '$lib/components/crud/select_project.svelte';
 
-	export let data: SuperValidated<Infer<CreateWorksession>>;
+	export let data: SuperValidated<Infer<CreateSession>>;
 	export let projects:
 		| BasicProjectWithClients
-		| BasicProjectWithClientsAndWorksessions
+		| BasicProjectWithClientsAndSessions
 		| BasicProjectWithClients[]
-		| BasicProjectWithClientsAndWorksessions[];
+		| BasicProjectWithClientsAndSessions[];
 	let open = false;
 
 	const form = superForm(data, {
-		validators: zodClient(createWorksessionSchema),
+		validators: zodClient(createSessionSchema),
 		taintedMessage: null,
 		dataType: 'json',
 		onResult({ result }) {
 			if (result.type === 'success') {
 				open = false;
 				toast.success('Session created successfully!', {
-					description: result.data?.worksession_name,
+					description: result.data?.session_name,
 					position: 'bottom-left'
 				});
 			} else {
@@ -58,11 +58,11 @@
 	bind:open
 	triggerClass="h-full rounded-full p-4"
 	title="New Session"
-	description="Here you can create a new worksession. Click 'Create' when you're done."
+	description="Here you can create a new session. Click 'Create' when you're done."
 >
 	<Plus slot="trigger" size={35} />
 	<div slot="form">
-		<form method="POST" action="/sessions?/createWorksession" use:enhance>
+		<form method="POST" action="/sessions?/createSession" use:enhance>
 			<input type="hidden" name="client" value={$formData.client} />
 			<Form.Field {form} name="project">
 				<Form.Control let:attrs>
@@ -80,7 +80,7 @@
 					<Form.Label>Details</Form.Label>
 					<Textarea
 						{...attrs}
-						placeholder="Add any additional detail about the worksession."
+						placeholder="Add any additional detail about the session."
 						bind:value={$formData.details}
 					/>
 				</Form.Control>

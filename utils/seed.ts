@@ -25,7 +25,7 @@ const defaultUser: DefaultUser = JSON.parse(process.env.DEFAULT_USER as string);
 const users: schema.User[] = [];
 const clients: schema.Client[] = [];
 const projects: schema.Project[] = [];
-const worksessions: schema.Worksession[] = [];
+const sessions: schema.Session[] = [];
 
 const max = 8;
 const main = async () => {
@@ -35,7 +35,7 @@ const main = async () => {
 		console.log('Clearing database 🗑️');
 		// Delete all data
 		await db.delete(schema.sessionsTable);
-		await db.delete(schema.worksessionsTable);
+		await db.delete(schema.sessionsTable);
 		await db.delete(schema.projectsTable);
 		await db.delete(schema.clientsTable);
 		await db.delete(schema.usersTable);
@@ -75,7 +75,7 @@ const main = async () => {
 			await db.insert(schema.usersTable).values(users);
 			await db.insert(schema.clientsTable).values(clients);
 			await db.insert(schema.projectsTable).values(projects);
-			await db.insert(schema.worksessionsTable).values(worksessions);
+			await db.insert(schema.sessionsTable).values(sessions);
 		} catch (error) {
 			console.error(error);
 			throw new Error('Failed to seed database 💥');
@@ -126,12 +126,12 @@ function seedDB(userId: string) {
 				updatedAt: faker.date.anytime()
 			});
 
-			// Create max 5 worksessions per project
+			// Create max 5 sessions per project
 			for (let j = 0; j < Math.floor(Math.random() * max + 1); j++) {
 				const start = faker.date.past();
 				const end = new Date(start.getTime() + Math.floor(Math.random() * (24 * 60 * 60 * 1000)));
 
-				worksessions.push({
+				sessions.push({
 					id: generateId(15),
 					details: faker.lorem.sentence(),
 					start: start,

@@ -1,10 +1,10 @@
 import { db } from '../db';
-import { clientsTable, projectsTable, worksessionsTable } from '../schemas';
+import { clientsTable, projectsTable, sessionsTable } from '../schemas';
 import { generateId } from 'lucia';
 import {
 	upsertClientSchema,
 	createProjectSchema,
-	createWorksessionSchema,
+	createSessionSchema,
 	upsertProjectSchema
 } from '$lib/zod-schemas';
 import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
@@ -160,16 +160,16 @@ export async function createProjectAction(event: RequestEvent) {
 	};
 }
 
-export async function createWorksessionAction(event: RequestEvent) {
+export async function createSessionAction(event: RequestEvent) {
 	if (!event.locals.user) throw redirect(302, '/signup');
-	const form = await superValidate(event, zod(createWorksessionSchema));
+	const form = await superValidate(event, zod(createSessionSchema));
 	if (!form.valid) {
 		return fail(400, {
-			createWorksessionForm: form
+			createSessionForm: form
 		});
 	}
 	try {
-		await db.insert(worksessionsTable).values({
+		await db.insert(sessionsTable).values({
 			id: generateId(15),
 			user_id: event.locals.user.id,
 			project_id: form.data.project,
@@ -181,33 +181,33 @@ export async function createWorksessionAction(event: RequestEvent) {
 			updatedAt: new Date()
 		});
 	} catch (error) {
-		return fail(400, { createWorksessionForm: form });
+		return fail(400, { createSessionForm: form });
 	}
 
 	return {
-		createWorksessionForm: form,
-		worksession_name: form.data.details
+		createSessionForm: form,
+		session_name: form.data.details
 	};
 }
 
-export async function deleteWorksessionAction(event: RequestEvent) {
+export async function deleteSessionAction(event: RequestEvent) {
 	if (!event.locals.user) throw redirect(302, '/signup');
 	const form = await event.request.formData();
 	const id = form.get('id') as string;
 	if (!id) throw fail(400, { message: 'Invalid id' });
-	const worksession = await db.query.worksessionsTable.findFirst({
-		where: and(eq(worksessionsTable.user_id, event.locals.user.id), eq(worksessionsTable.id, id))
+	const session = await db.query.sessionsTable.findFirst({
+		where: and(eq(sessionsTable.user_id, event.locals.user.id), eq(sessionsTable.id, id))
 	});
-	if (!worksession || worksession.user_id !== event.locals.user.id) {
+	if (!session || session.user_id !== event.locals.user.id) {
 		return fail(401, {
-			message: 'You are not allowed to delete this worksession.'
+			message: 'You are not allowed to delete this session.'
 		});
 	}
 	await db
-		.delete(worksessionsTable)
-		.where(and(eq(worksessionsTable.id, id), eq(worksessionsTable.user_id, event.locals.user.id)));
+		.delete(sessionsTable)
+		.where(and(eq(sessionsTable.id, id), eq(sessionsTable.user_id, event.locals.user.id)));
 	return {
-		message: 'Worksession deleted.'
+		message: 'Session deleted.'
 	};
 }
 
@@ -225,10 +225,8 @@ export async function deleteProjectAction(event: RequestEvent) {
 		});
 	}
 	await db
-		.delete(worksessionsTable)
-		.where(
-			and(eq(worksessionsTable.project_id, id), eq(worksessionsTable.user_id, event.locals.user.id))
-		);
+		.delete(sessionsTable)
+		.where(and(eq(sessionsTable.project_id, id), eq(sessionsTable.user_id, event.locals.user.id)));
 	await db
 		.delete(projectsTable)
 		.where(and(eq(projectsTable.id, id), eq(projectsTable.user_id, event.locals.user.id)));
@@ -251,10 +249,8 @@ export async function deleteClientAction(event: RequestEvent) {
 		});
 	}
 	await db
-		.delete(worksessionsTable)
-		.where(
-			and(eq(worksessionsTable.client_id, id), eq(worksessionsTable.user_id, event.locals.user.id))
-		);
+		.delete(sessionsTable)
+		.where(and(eq(sessionsTable.client_id, id), eq(sessionsTable.user_id, event.locals.user.id)));
 	await db
 		.delete(projectsTable)
 		.where(and(eq(projectsTable.client_id, id), eq(projectsTable.user_id, event.locals.user.id)));

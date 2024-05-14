@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Client, Project, WorksessionWithProjectsAndClients } from '$lib/server/schemas';
+	import type { Client, Project, SessionWithProjectsAndClients } from '$lib/server/schemas';
 	import { writable } from 'svelte/store';
 	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
 	import * as Table from '$lib/components/ui/table';
@@ -22,11 +22,11 @@
 	import { DateFormatter } from '@internationalized/date';
 	import { calculateElapsedTime } from '$lib/basic_utils';
 
-	export let worksessions: WorksessionWithProjectsAndClients[];
-	const worksessions_table = writable(worksessions);
-	$: $worksessions_table = worksessions;
+	export let sessions: SessionWithProjectsAndClients[];
+	const sessions_table = writable(sessions);
+	$: $sessions_table = sessions;
 
-	const table = createTable(worksessions_table, {
+	const table = createTable(sessions_table, {
 		page: addPagination({
 			initialPageSize: 5,
 			initialPageIndex: 0
@@ -46,7 +46,7 @@
 
 	const hidableCols = ['start', 'end', 'details', 'clients', 'projects', 'Duration'];
 
-	let worksession: WorksessionWithProjectsAndClients | null = null;
+	let session: SessionWithProjectsAndClients | null = null;
 	let projects: Project[] | Project | null = null;
 	let clients: Client[] | Client | null = null;
 
@@ -75,13 +75,11 @@
 			plugins: {},
 			cell: ({ row, id }) => {
 				if (row.isData()) {
-					worksession = $worksessions_table.find((c) => c.id === row.original.id) ?? null;
-					projects = worksession?.projects ?? null;
-					clients = worksession?.clients ?? null;
+					session = $sessions_table.find((c) => c.id === row.original.id) ?? null;
+					projects = session?.projects ?? null;
+					clients = session?.clients ?? null;
 				}
-				return worksession?.end
-					? calculateElapsedTime(worksession?.start, worksession?.end)
-					: 'Running';
+				return session?.end ? calculateElapsedTime(session?.start, session?.end) : 'Running';
 			}
 		}),
 
@@ -138,7 +136,7 @@
 			header: '',
 			cell: () => {
 				return createRender(SessionsTableActions, {
-					record: worksession
+					record: session
 				});
 			},
 			plugins: {

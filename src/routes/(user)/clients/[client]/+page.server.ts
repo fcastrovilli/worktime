@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		with: {
 			projects: {
 				with: {
-					worksessions: {
+					sessions: {
 						columns: {
 							id: true,
 							start: true,

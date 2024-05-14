@@ -48,7 +48,7 @@
 				{#each client.projects as project}
 					<Card title={project.name}>
 						<div slot="description" class="flex flex-col">
-							<p class="text-sm text-muted-foreground">Sessions: {project.worksessions.length}</p>
+							<p class="text-sm text-muted-foreground">Sessions: {project.sessions.length}</p>
 						</div>
 						<div slot="content" class="flex flex-col">
 							<p>They owe me 1000€</p>

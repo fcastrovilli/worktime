@@ -14,8 +14,8 @@
 	import type {
 		Project,
 		ProjectWithClients,
-		ProjectWithClientsAndWorksessions,
-		ProjectWithWorksessions
+		ProjectWithClientsAndSessions,
+		ProjectWithSessions
 	} from '$lib/server/schemas';
 	import { type DateValue, CalendarDate } from '@internationalized/date';
 	import { goto } from '$app/navigation';
@@ -25,8 +25,8 @@
 	export let project:
 		| Project
 		| ProjectWithClients
-		| ProjectWithClientsAndWorksessions
-		| ProjectWithWorksessions
+		| ProjectWithClientsAndSessions
+		| ProjectWithSessions
 		| undefined = undefined;
 	export let data: SuperValidated<Infer<UpsertProject>>;
 	export let clients: BasicType | BasicType[];

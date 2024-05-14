@@ -4,14 +4,14 @@
 	import SessionRunner from '$lib/components/crud/session_runner.svelte';
 
 	export let data;
-	$: worksessions = data.worksessions;
+	$: sessions = data.sessions;
 </script>
 
 <div class="container flex flex-col items-center justify-center gap-4 py-5">
 	<div class="flex flex-row items-center justify-center gap-4">
 		<h1 class="text-4xl font-semibold">Sessions</h1>
-		<NewSessionForm data={data.createWorksessionForm} projects={data.projects} />
+		<NewSessionForm data={data.createSessionForm} projects={data.projects} />
 	</div>
 	<SessionRunner />
-	<SessionsDataTable {worksessions} />
+	<SessionsDataTable {sessions} />
 </div>

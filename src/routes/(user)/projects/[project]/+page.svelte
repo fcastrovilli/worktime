@@ -43,20 +43,17 @@
 
 		<div class="flex items-center justify-center gap-4 py-5">
 			<h3 class="text-2xl font-semibold">
-				All Sessions <small class="text-sm text-muted-foreground"
-					>({project.worksessions.length})</small
+				All Sessions <small class="text-sm text-muted-foreground">({project.sessions.length})</small
 				>
 			</h3>
-			<NewSessionForm data={data.createWorksessionForm} projects={project} />
+			<NewSessionForm data={data.createSessionForm} projects={project} />
 		</div>
-		{#if project.worksessions.length > 0}
+		{#if project.sessions.length > 0}
 			<CardContainer>
-				{#each project.worksessions as session, i}
+				{#each project.sessions as session, i}
 					<Card>
 						<div slot="title" class="flex flex-row items-baseline gap-2">
-							<Label class="text-2xl font-semibold uppercase"
-								>#{project.worksessions.length - i}</Label
-							>
+							<Label class="text-2xl font-semibold uppercase">#{project.sessions.length - i}</Label>
 							<p class="text-sm lowercase text-muted-foreground">
 								{session.end ? calculateElapsedTime(session.start, session.end) : 'Still ongoing'}
 							</p>

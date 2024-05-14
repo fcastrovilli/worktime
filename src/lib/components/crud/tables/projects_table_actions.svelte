@@ -3,8 +3,8 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { Button } from '$lib/components/ui/button';
 	import DeleteItem from '../delete_item.svelte';
-	import type { ProjectWithClientsAndWorksessions } from '$lib/server/schemas';
-	export let record: ProjectWithClientsAndWorksessions | null = null;
+	import type { ProjectWithClientsAndSessions } from '$lib/server/schemas';
+	export let record: ProjectWithClientsAndSessions | null = null;
 
 	let openDelete = false;
 	let openEdit = false;

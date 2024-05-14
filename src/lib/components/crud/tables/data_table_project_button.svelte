@@ -3,15 +3,15 @@
 	import type {
 		Project,
 		ProjectWithClients,
-		ProjectWithClientsAndWorksessions
+		ProjectWithClientsAndSessions
 	} from '$lib/server/schemas';
 	export let projects:
 		| Project[]
 		| Project
 		| ProjectWithClients
 		| ProjectWithClients[]
-		| ProjectWithClientsAndWorksessions
-		| ProjectWithClientsAndWorksessions[]
+		| ProjectWithClientsAndSessions
+		| ProjectWithClientsAndSessions[]
 		| null;
 	const maxDisplayedProjects = 2;
 </script>

@@ -18,6 +18,6 @@ A simple time tracking app for your projects.
 
 - [ ] Update Actions
 - [ ] Fix data table search ( not working with component elements )
-- [ ] Make `session_runner` to actually create a session (edit `worksessionTable` to add a `duration` numeric column)
+- [ ] Make `session_runner` to actually create a session (edit `sessionTable` to add a `duration` numeric column)
 - [ ] Add budget logics
 - [ ] Enhance the `/dashboard` page with data visualization

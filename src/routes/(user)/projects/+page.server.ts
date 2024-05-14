@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		where: eq(projectsTable.user_id, locals.user.id),
 		with: {
 			clients: true,
-			worksessions: true
+			sessions: true
 		},
 		orderBy: [asc(projectsTable.deadline)]
 	});

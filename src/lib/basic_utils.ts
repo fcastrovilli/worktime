@@ -27,12 +27,12 @@ export type BasicProjectWithClients = {
 	clients: BasicType;
 };
 
-export type BasicProjectWithClientsAndWorksessions = {
+export type BasicProjectWithClientsAndSessions = {
 	id: string;
 	name: string;
 	slug: string;
 	clients: BasicType;
-	worksessions: {
+	sessions: {
 		id: string;
 		start: Date;
 		end: Date;

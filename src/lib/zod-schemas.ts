@@ -31,7 +31,7 @@ export const createProjectSchema = z.object({
 	client: z.string().min(15, 'Invalid client').max(15, 'Invalid client')
 });
 
-export const createWorksessionSchema = z.object({
+export const createSessionSchema = z.object({
 	start: z.string(),
 	end: z.string().nullable(),
 	details: z.string().max(1000, "Details field can't be more than 1000 characters").nullable(),
@@ -42,4 +42,4 @@ export const createWorksessionSchema = z.object({
 export type CreateProject = typeof createProjectSchema;
 export type UpsertProject = typeof upsertProjectSchema;
 export type UpsertClient = typeof upsertClientSchema;
-export type CreateWorksession = typeof createWorksessionSchema;
+export type CreateSession = typeof createSessionSchema;

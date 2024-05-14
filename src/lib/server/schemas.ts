@@ -28,14 +28,14 @@ export const usersTable = pgTable('user', {
 
 export const usersRelations = relations(usersTable, ({ many }) => ({
 	clients: many(clientsTable),
-	worksessions: many(worksessionsTable),
+	sessions: many(sessionsTable),
 	projects: many(projectsTable)
 }));
 
 /**
- * Sessions are used to store the user's session information.
+ * User Sessions are used to store the user's session information.
  */
-export const sessionsTable = pgTable('session', {
+export const userSessionsTable = pgTable('user_session', {
 	id: text('id').notNull().primaryKey(),
 	userId: text('user_id')
 		.notNull()
@@ -64,7 +64,7 @@ export const clientsRelations = relations(clientsTable, ({ one, many }) => ({
 	projects: many(projectsTable)
 }));
 
-export const worksessionsTable = pgTable('worksession', {
+export const sessionsTable = pgTable('session', {
 	id: text('id').notNull().primaryKey(),
 	details: text('details'),
 	start: timestamp('start', {
@@ -87,16 +87,16 @@ export const worksessionsTable = pgTable('worksession', {
 	...timestamps
 });
 
-export const worksessionsRelations = relations(worksessionsTable, ({ one }) => ({
+export const sessionsRelations = relations(sessionsTable, ({ one }) => ({
 	clients: one(clientsTable, {
-		fields: [worksessionsTable.client_id],
+		fields: [sessionsTable.client_id],
 		references: [clientsTable.id]
 	}),
 	projects: one(projectsTable, {
-		fields: [worksessionsTable.project_id],
+		fields: [sessionsTable.project_id],
 		references: [projectsTable.id]
 	}),
-	users: one(usersTable, { fields: [worksessionsTable.user_id], references: [usersTable.id] })
+	users: one(usersTable, { fields: [sessionsTable.user_id], references: [usersTable.id] })
 }));
 
 export const projectsTable = pgTable('project', {
@@ -118,7 +118,7 @@ export const projectsTable = pgTable('project', {
 });
 
 export const projectsRelations = relations(projectsTable, ({ many, one }) => ({
-	worksessions: many(worksessionsTable),
+	sessions: many(sessionsTable),
 	clients: one(clientsTable, { fields: [projectsTable.client_id], references: [clientsTable.id] }),
 	users: one(usersTable, { fields: [projectsTable.user_id], references: [usersTable.id] })
 }));
@@ -128,13 +128,13 @@ export type Client = InferSelectModel<typeof clientsTable>;
 export type ClientWithProjects = Client & { projects: Project[] };
 export type Project = InferSelectModel<typeof projectsTable>;
 export type ProjectWithClients = Project & { clients: Client[] | Client };
-export type ProjectWithWorksessions = Project & { worksessions: Worksession[] | Worksession };
-export type ProjectWithClientsAndWorksessions = Project & { clients: Client[] | Client } & {
-	worksessions: Worksession[] | Worksession;
+export type ProjectWithSessions = Project & { sessions: Session[] | Session };
+export type ProjectWithClientsAndSessions = Project & { clients: Client[] | Client } & {
+	sessions: Session[] | Session;
 };
-export type Worksession = InferSelectModel<typeof worksessionsTable>;
-export type WorksessionWithProjects = Worksession & { projects: Project[] | Project };
-export type WorksessionWithClients = Worksession & { clients: Client[] | Client };
-export type WorksessionWithProjectsAndClients = Worksession & { projects: Project[] | Project } & {
+export type Session = InferSelectModel<typeof sessionsTable>;
+export type SessionWithProjects = Session & { projects: Project[] | Project };
+export type SessionWithClients = Session & { clients: Client[] | Client };
+export type SessionWithProjectsAndClients = Session & { projects: Project[] | Project } & {
 	clients: Client[] | Client;
 };

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Client, ProjectWithClientsAndWorksessions, Worksession } from '$lib/server/schemas';
+	import type { Client, ProjectWithClientsAndSessions, Session } from '$lib/server/schemas';
 	import { writable } from 'svelte/store';
 	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
 	import * as Table from '$lib/components/ui/table';
@@ -21,7 +21,7 @@
 	import { DateFormatter } from '@internationalized/date';
 	import DataTableClientButton from './data_table_client_button.svelte';
 
-	export let projects: ProjectWithClientsAndWorksessions[];
+	export let projects: ProjectWithClientsAndSessions[];
 	const projects_table = writable(projects);
 	$: $projects_table = projects;
 
@@ -42,11 +42,11 @@
 		dateStyle: 'short'
 	});
 
-	const hidableCols = ['name', 'deadline', 'description', 'clients', 'worksessions'];
+	const hidableCols = ['name', 'deadline', 'description', 'clients', 'sessions'];
 
-	let project: ProjectWithClientsAndWorksessions | null = null;
+	let project: ProjectWithClientsAndSessions | null = null;
 	let clients: Client[] | Client | null = null;
-	let sessions: Worksession[] | Worksession | null = null;
+	let sessions: Session[] | Session | null = null;
 
 	const columns = table.createColumns([
 		table.column({
@@ -74,7 +74,7 @@
 			cell: ({ row }) => {
 				if (row.isData()) {
 					project = $projects_table.find((c) => c.id === row.original.id) ?? null;
-					sessions = project?.worksessions ?? null;
+					sessions = project?.sessions ?? null;
 					clients = project?.clients ?? null;
 				}
 				return createRender(DataTableProjectButton, { projects: project });
@@ -101,7 +101,7 @@
 			}
 		}),
 		table.column({
-			accessor: 'worksessions',
+			accessor: 'sessions',
 			header: 'Sessions',
 			plugins: {},
 			cell: () => {
@@ -187,7 +187,7 @@
 							{#each headerRow.cells as cell (cell.id)}
 								<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
 									<Table.Head {...attrs} class="text-left [&:has([role=checkbox])]:pl-3">
-										{#if cell.id === 'deadline' || cell.id === 'name' || cell.id === 'worksessions' || cell.id === 'clients'}
+										{#if cell.id === 'deadline' || cell.id === 'name' || cell.id === 'sessions' || cell.id === 'clients'}
 											<Button variant="ghost" on:click={props.sort.toggle}>
 												<Render of={cell.render()} />
 												<ArrowUpDown class={'ml-2 h-4 w-4'} />
