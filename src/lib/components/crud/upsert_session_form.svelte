@@ -19,6 +19,8 @@
 		SessionWithProjectsAndClients
 	} from '$lib/server/schemas';
 	import { upsertSessionSchema, type UpsertSession } from '$lib/zod-schemas';
+	import { onMount } from 'svelte';
+	import { CalendarDateTime, type DateValue } from '@internationalized/date';
 
 	export let data: SuperValidated<Infer<UpsertSession>>;
 	export let projects:
@@ -34,7 +36,7 @@
 		| SessionWithProjectsAndClients
 		| undefined = undefined;
 
-	let open = false;
+	export let open = false;
 
 	const form = superForm(data, {
 		validators: zodClient(upsertSessionSchema),
@@ -69,6 +71,35 @@
 			}
 		}
 	}
+	onMount(() => {
+		if (session) {
+			const start: DateValue = new CalendarDateTime(
+				session.start.getFullYear(),
+				session.start.getMonth(),
+				session.start.getDate(),
+				session.start.getHours(),
+				session.start.getMinutes()
+			);
+			const end: DateValue | undefined = session.end
+				? new CalendarDateTime(
+						session.end.getFullYear(),
+						session.end.getMonth(),
+						session.end.getDate(),
+						session.end.getHours(),
+						session.end.getMinutes()
+					)
+				: undefined;
+			$formData = {
+				id: session.id,
+				duration: session.duration,
+				start: start.toString(),
+				end: end?.toString() ?? null,
+				details: session.details,
+				client: session.client_id,
+				project: session.project_id
+			};
+		}
+	});
 </script>
 
 <Panel
@@ -79,7 +110,9 @@
 		? "Here you can update a session. Click 'Update' when you're done."
 		: "Here you can create a new session. Click 'Create' when you're done."}
 >
-	<Plus slot="trigger" size={35} />
+	<slot name="trigger" slot="trigger">
+		<Plus size={35} />
+	</slot>
 	<div slot="form">
 		<form method="POST" action="/sessions?/upsertSession" use:enhance>
 			<input type="hidden" name="client" value={$formData.client} />

@@ -1,12 +1,10 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button/index.js';
-	import Card from '$lib/components/crud/card.svelte';
-	import CardContainer from '$lib/components/crud/card_container.svelte';
 	import UpsertProjectForm from '$lib/components/crud/upsert_project_form.svelte';
 	import UpsertClientForm from '$lib/components/crud/upsert_client_form.svelte';
 	import type { BasicType } from '$lib/basic_utils';
 	import { Settings } from 'lucide-svelte';
 	import { ssp, queryParam } from 'sveltekit-search-params';
+	import ProjectsDataTable from '$lib/components/crud/tables/projects_data_table.svelte';
 
 	const edit = queryParam('edit', ssp.boolean(), { showDefaults: false });
 
@@ -44,24 +42,7 @@
 			<UpsertProjectForm data={data.upsertProject} clients={client_clean} />
 		</div>
 		{#if client.projects.length > 0}
-			<CardContainer>
-				{#each client.projects as project}
-					<Card title={project.name}>
-						<div slot="description" class="flex flex-col">
-							<p class="text-sm text-muted-foreground">Sessions: {project.sessions.length}</p>
-						</div>
-						<div slot="content" class="flex flex-col">
-							<p>They owe me 1000€</p>
-							{#if project.deadline}
-								<p>Deadline: {project.deadline.toLocaleDateString()}</p>
-							{/if}
-						</div>
-						<div slot="footer">
-							<Button variant="default" class="w-full" href="/projects/{project.slug}">Show</Button>
-						</div>
-					</Card>
-				{/each}
-			</CardContainer>
+			<ProjectsDataTable projects={client.projects} />
 		{/if}
 	{:else}
 		<p class="text-lg">Client not found</p>

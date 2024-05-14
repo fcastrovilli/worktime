@@ -1,10 +1,5 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Label } from '$lib/components/ui/label/index.js';
-	import Card from '$lib/components/crud/card.svelte';
-	import CardContainer from '$lib/components/crud/card_container.svelte';
 	import type { PageData } from './$types';
-	import { calculateElapsedTime } from '$lib/basic_utils';
 	import SessionRunner from '$lib/components/crud/session_runner.svelte';
 	import UpsertSessionForm from '$lib/components/crud/upsert_session_form.svelte';
 	import UpsertProjectForm from '$lib/components/crud/upsert_project_form.svelte';
@@ -13,6 +8,7 @@
 	export let data: PageData;
 
 	import { ssp, queryParam } from 'sveltekit-search-params';
+	import SessionSmallDataTable from '$lib/components/crud/tables/sessions_small_data_table.svelte';
 
 	const edit = queryParam('edit', ssp.boolean(), { showDefaults: false });
 
@@ -49,31 +45,7 @@
 			<UpsertSessionForm data={data.upsertSessionForm} projects={project} />
 		</div>
 		{#if project.sessions.length > 0}
-			<CardContainer>
-				{#each project.sessions as session, i}
-					<Card>
-						<div slot="title" class="flex flex-row items-baseline gap-2">
-							<Label class="text-2xl font-semibold uppercase">#{project.sessions.length - i}</Label>
-							<p class="text-sm lowercase text-muted-foreground">
-								{session.end ? calculateElapsedTime(session.start, session.end) : 'Still ongoing'}
-							</p>
-						</div>
-						<div slot="content" class="flex flex-col">
-							<p>
-								Start: {session.start.toLocaleDateString()}
-								{session.start.toLocaleTimeString()}
-							</p>
-
-							{#if session.end}
-								<p>End: {session.end.toLocaleDateString()} {session.end.toLocaleTimeString()}</p>
-							{/if}
-						</div>
-						<div slot="footer">
-							<Button variant="default" class="w-full" href="/sessions/{session.id}">Show</Button>
-						</div>
-					</Card>
-				{/each}
-			</CardContainer>
+			<SessionSmallDataTable sessions={project.sessions} />
 		{/if}
 	{:else}
 		<p class="text-lg">Project not found</p>

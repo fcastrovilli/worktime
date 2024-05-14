@@ -1,10 +1,5 @@
 <script lang="ts">
-	import type {
-		Client,
-		Project,
-		Session,
-		SessionWithProjectsAndClients
-	} from '$lib/server/schemas';
+	import type { Client, Project, Session } from '$lib/server/schemas';
 	import { writable } from 'svelte/store';
 	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
 	import * as Table from '$lib/components/ui/table';
@@ -27,7 +22,7 @@
 	import { DateFormatter } from '@internationalized/date';
 	import { calculateElapsedTime } from '$lib/basic_utils';
 
-	export let sessions: SessionWithProjectsAndClients[];
+	export let sessions: Session[];
 	const sessions_table = writable(sessions);
 	$: $sessions_table = sessions;
 
@@ -51,9 +46,7 @@
 
 	const hidableCols = ['start', 'end', 'details', 'clients', 'projects', 'Duration'];
 
-	let session: SessionWithProjectsAndClients | null = null;
-	let projects: Project[] | Project | null = null;
-	let clients: Client[] | Client | null = null;
+	let session: Session | null = null;
 
 	const columns = table.createColumns([
 		table.column({
@@ -81,19 +74,8 @@
 			cell: ({ row }) => {
 				if (row.isData()) {
 					session = $sessions_table.find((c) => c.id === row.original.id) ?? null;
-					projects = session?.projects ?? null;
-					clients = session?.clients ?? null;
 				}
 				return calculateElapsedTime(session?.duration ?? 0);
-			}
-		}),
-
-		table.column({
-			accessor: 'projects',
-			header: 'Projects',
-			plugins: {},
-			cell: () => {
-				return createRender(DataTableProjectButton, { projects: projects });
 			}
 		}),
 
@@ -126,14 +108,6 @@
 			},
 			cell: ({ value }) => {
 				return value ? value : 'No details provided';
-			}
-		}),
-		table.column({
-			accessor: 'clients',
-			header: 'Clients',
-			plugins: {},
-			cell: () => {
-				return createRender(DataTableClientButton, { clients: clients });
 			}
 		}),
 		table.column({

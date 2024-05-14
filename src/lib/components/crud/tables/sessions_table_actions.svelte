@@ -3,8 +3,8 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { Button } from '$lib/components/ui/button';
 	import DeleteItem from '../delete_item.svelte';
-	import type { SessionWithProjectsAndClients } from '$lib/server/schemas';
-	export let record: SessionWithProjectsAndClients | null = null;
+	import type { Session, SessionWithProjectsAndClients } from '$lib/server/schemas';
+	export let record: SessionWithProjectsAndClients | Session | null = null;
 
 	let openDelete = false;
 </script>
@@ -19,7 +19,8 @@
 	<DropdownMenu.Content>
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>
-			<DropdownMenu.Item>Edit</DropdownMenu.Item>
+			<DropdownMenu.Item href="/sessions/{record?.id}">View</DropdownMenu.Item>
+			<DropdownMenu.Item href="/sessions/{record?.id}/?edit">Edit</DropdownMenu.Item>
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />
 		<DropdownMenu.Item on:click={() => (openDelete = true)}>Delete</DropdownMenu.Item>
