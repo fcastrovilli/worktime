@@ -228,7 +228,7 @@
 												<Render of={cell.render()} />
 											</div>
 										{:else}
-											<div class="px-4 text-left font-medium">
+											<div class="px-4 text-left">
 												<Render of={cell.render()} />
 											</div>
 										{/if}

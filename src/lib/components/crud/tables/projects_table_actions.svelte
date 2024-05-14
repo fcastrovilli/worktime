@@ -4,7 +4,6 @@
 	import { Button } from '$lib/components/ui/button';
 	import DeleteItem from '../delete_item.svelte';
 	import type { ProjectWithClientsAndWorksessions } from '$lib/server/schemas';
-	import UpsertProjectForm from '../upsert_project_form.svelte';
 	export let record: ProjectWithClientsAndWorksessions | null = null;
 
 	let openDelete = false;
@@ -37,7 +36,3 @@
 		bind:open={openDelete}
 	/>
 {/if}
-<!-- 
-{#if record}
-<UpsertProjectForm data={form} project={record} bind:open={openEdit} />
-{/if} -->

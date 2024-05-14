@@ -35,7 +35,7 @@
 		<DropdownMenu.Separator />
 		<div class="block sm:hidden">
 			<DropdownMenu.Group>
-				<DropdownMenu.Item href="/">
+				<DropdownMenu.Item href="/dashboard">
 					Dashboard
 					<DropdownMenu.Shortcut class="hidden sm:block">⇧⌘P</DropdownMenu.Shortcut>
 				</DropdownMenu.Item>
