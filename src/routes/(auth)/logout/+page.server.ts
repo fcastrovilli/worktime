@@ -12,10 +12,10 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 export const actions: Actions = {
 	default: async ({ locals, cookies }) => {
-		if (!locals.session) {
+		if (!locals.user_session) {
 			return fail(401);
 		}
-		await lucia.invalidateSession(locals.session.id);
+		await lucia.invalidateSession(locals.user_session.id);
 		const sessionCookie = lucia.createBlankSessionCookie();
 		cookies.set(sessionCookie.name, sessionCookie.value, {
 			path: '.',

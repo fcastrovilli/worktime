@@ -20,7 +20,7 @@ export const actions: Actions = {
 			throw redirect(302, '/signup');
 		}
 		try {
-			if (!locals.session) throw redirect(302, '/signup');
+			if (!locals.user_session) throw redirect(302, '/signup');
 			const userId = locals.user.id;
 			await lucia.invalidateUserSessions(userId);
 			const sessionCookie = lucia.createBlankSessionCookie();
