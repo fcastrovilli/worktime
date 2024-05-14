@@ -30,7 +30,12 @@
 		| undefined = undefined;
 	export let data: SuperValidated<Infer<UpsertProject>>;
 	export let clients: BasicType | BasicType[];
-	let open = false;
+
+	import { ssp, queryParam } from 'sveltekit-search-params';
+
+	const edit = queryParam('edit', ssp.boolean(), { showDefaults: false });
+
+	let open = $edit ?? false;
 
 	const slug = $page.params.project;
 

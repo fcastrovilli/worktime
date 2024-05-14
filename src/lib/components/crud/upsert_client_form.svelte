@@ -11,9 +11,13 @@
 	import type { Client, ClientWithProjects } from '$lib/server/schemas';
 	import { goto } from '$app/navigation';
 
+	import { ssp, queryParam } from 'sveltekit-search-params';
+
+	const edit = queryParam('edit', ssp.boolean(), { showDefaults: false });
+
 	export let data: SuperValidated<Infer<UpsertClient>>;
 	export let client: Client | ClientWithProjects | undefined = undefined;
-	let open = false;
+	let open = $edit ?? false;
 
 	const form = superForm(data, {
 		validators: zodClient(upsertClientSchema),

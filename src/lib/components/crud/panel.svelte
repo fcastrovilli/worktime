@@ -5,7 +5,15 @@
 	export let title = 'Create';
 	export let description = "Make changes here. Click save when you're done.";
 	export let triggerClass = '';
-	export let open = false;
+	export let open: boolean = false;
+
+	import { ssp, queryParam } from 'sveltekit-search-params';
+	import { onMount } from 'svelte';
+
+	const edit = queryParam('edit', ssp.boolean(), { showDefaults: false });
+	onMount(() => {
+		if ($edit) $edit = null;
+	});
 </script>
 
 <Sheet.Root bind:open>

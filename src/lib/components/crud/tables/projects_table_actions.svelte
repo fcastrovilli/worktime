@@ -21,7 +21,7 @@
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>
 			<DropdownMenu.Item href={`/projects/${record?.slug ?? ''}`}>View</DropdownMenu.Item>
-			<DropdownMenu.Item on:click={() => (openEdit = true)}>Edit</DropdownMenu.Item>
+			<DropdownMenu.Item href={`/projects/${record?.slug}/?edit`}>Edit</DropdownMenu.Item>
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />
 		<DropdownMenu.Item on:click={() => (openDelete = true)}>Delete</DropdownMenu.Item>

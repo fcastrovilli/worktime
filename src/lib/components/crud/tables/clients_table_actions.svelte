@@ -7,7 +7,6 @@
 	export let record: ClientWithProjects | null = null;
 
 	let openDelete = false;
-	let openEdit = false;
 </script>
 
 <DropdownMenu.Root>
@@ -20,8 +19,8 @@
 	<DropdownMenu.Content>
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>
-			<DropdownMenu.Item href={`/clients/${record?.slug ?? ''}`}>View</DropdownMenu.Item>
-			<DropdownMenu.Item on:click={() => (openEdit = true)}>Edit</DropdownMenu.Item>
+			<DropdownMenu.Item href={`/clients/${record?.slug}`}>View</DropdownMenu.Item>
+			<DropdownMenu.Item href={`/clients/${record?.slug}/?edit`}>Edit</DropdownMenu.Item>
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />
 		<DropdownMenu.Item on:click={() => (openDelete = true)}>Delete</DropdownMenu.Item>

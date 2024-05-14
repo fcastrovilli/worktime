@@ -145,6 +145,9 @@ devDependencies:
   svelte-headless-table:
     specifier: ^0.18.2
     version: 0.18.2(svelte@4.2.16)
+  sveltekit-search-params:
+    specifier: ^2.1.2
+    version: 2.1.2(@sveltejs/kit@2.5.7)(svelte@4.2.16)(vite@5.2.11)
   tailwindcss:
     specifier: ^3.3.6
     version: 3.4.3
@@ -4509,6 +4512,20 @@ packages:
       locate-character: 3.0.0
       magic-string: 0.30.10
       periscopic: 3.1.0
+
+  /sveltekit-search-params@2.1.2(@sveltejs/kit@2.5.7)(svelte@4.2.16)(vite@5.2.11):
+    resolution: {integrity: sha512-wh5WSo46wz48MdWvpchVGrOjoDmbmsNJ7dUToSZ4L1SQ2LOasmTjAAlFhfG/EFvEhR34phRzLF7BjE0ZHzx1Uw==}
+    peerDependencies:
+      '@sveltejs/kit': ^1.0.0 || ^2.0.0
+      svelte: ^3.55.0 || ^4.0.0 || ^5.0.0
+    dependencies:
+      '@sveltejs/kit': 2.5.7(@sveltejs/vite-plugin-svelte@3.1.0)(svelte@4.2.16)(vite@5.2.11)
+      '@sveltejs/vite-plugin-svelte': 3.1.0(svelte@4.2.16)(vite@5.2.11)
+      svelte: 4.2.16
+    transitivePeerDependencies:
+      - supports-color
+      - vite
+    dev: true
 
   /sveltekit-superforms@2.13.1(@sveltejs/kit@2.5.7)(@types/json-schema@7.0.15)(esbuild-runner@2.2.2)(esbuild@0.21.1)(svelte@4.2.16):
     resolution: {integrity: sha512-kmwC3sNFAiHADLq7E46QBgDk4OEXLrhCQumwRbPcRAOQf/XvBzGBNmQGnIP62Rpiq+qLKbwo40c1gA4QA31bKg==}
