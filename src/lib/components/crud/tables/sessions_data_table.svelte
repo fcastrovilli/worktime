@@ -69,17 +69,30 @@
 			},
 			plugins: {}
 		}),
+		// table.column({
+		// 	accessor: ({ id }) => id,
+		// 	header: 'Duration',
+		// 	plugins: {},
+		// 	cell: ({ row, id }) => {
+		// 		if (row.isData()) {
+		// 			session = $sessions_table.find((c) => c.id === row.original.id) ?? null;
+		// 			projects = session?.projects ?? null;
+		// 			clients = session?.clients ?? null;
+		// 		}
+		// 		return session?.end ? calculateElapsedTime(session?.start, session?.end) : 'Running';
+		// 	}
+		// }),
 		table.column({
-			accessor: ({ id }) => id,
+			accessor: 'duration',
 			header: 'Duration',
 			plugins: {},
-			cell: ({ row, id }) => {
+			cell: ({ row }) => {
 				if (row.isData()) {
 					session = $sessions_table.find((c) => c.id === row.original.id) ?? null;
 					projects = session?.projects ?? null;
 					clients = session?.clients ?? null;
 				}
-				return session?.end ? calculateElapsedTime(session?.start, session?.end) : 'Running';
+				return calculateElapsedTime(session?.duration ?? 0);
 			}
 		}),
 
@@ -195,7 +208,7 @@
 							{#each headerRow.cells as cell (cell.id)}
 								<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
 									<Table.Head {...attrs} class="text-left [&:has([role=checkbox])]:pl-3">
-										{#if cell.id === 'start' || cell.id === 'end' || cell.id === 'projects' || cell.id === 'clients' || cell.id === 'Duration'}
+										{#if cell.id === 'start' || cell.id === 'end' || cell.id === 'projects' || cell.id === 'clients' || cell.id === 'duration'}
 											<Button variant="ghost" on:click={props.sort.toggle}>
 												<Render of={cell.render()} />
 												<ArrowUpDown class={'ml-2 h-4 w-4'} />
@@ -218,7 +231,7 @@
 								<Subscribe attrs={cell.attrs()} let:attrs>
 									<Table.Cell {...attrs}>
 										{#if cell.id === 'details'}
-											<div class="max-w-sm">
+											<div class="line-clamp-2">
 												<Render of={cell.render()} />
 											</div>
 										{:else if cell.id === 'id'}

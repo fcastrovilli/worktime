@@ -21,25 +21,17 @@ export const upsertProjectSchema = z.object({
 	deadline: z.string().nullable(),
 	client: z.string().min(15, 'Invalid client').max(15, 'Invalid client')
 });
-export const createProjectSchema = z.object({
-	name: z
-		.string()
-		.min(1, 'Name must be at least 1 characters')
-		.max(50, "Name can't be more than 50 characters"),
-	description: z.string().max(1000, "Description can't be more than 1000 characters").nullable(),
-	deadline: z.string().nullable(),
-	client: z.string().min(15, 'Invalid client').max(15, 'Invalid client')
-});
 
-export const createSessionSchema = z.object({
+export const upsertSessionSchema = z.object({
+	id: z.string().min(15, 'Invalid session').max(15, 'Invalid session').nullable(),
 	start: z.string(),
 	end: z.string().nullable(),
+	duration: z.number().nullable(),
 	details: z.string().max(1000, "Details field can't be more than 1000 characters").nullable(),
 	project: z.string().min(15, 'Invalid project').max(15, 'Invalid project'),
 	client: z.string().min(15, 'Invalid client').max(15, 'Invalid client')
 });
 
-export type CreateProject = typeof createProjectSchema;
 export type UpsertProject = typeof upsertProjectSchema;
 export type UpsertClient = typeof upsertClientSchema;
-export type CreateSession = typeof createSessionSchema;
+export type UpsertSession = typeof upsertSessionSchema;

@@ -109,7 +109,7 @@
 					<SelectClient {form} {clients} {attrs} />
 				</Form.Control>
 				<Form.Description>
-					You can manage clients in your <a href="/clients">clients settings</a>.
+					You can manage clients in your <a href="/clients">clients page</a>.
 				</Form.Description>
 				<Form.FieldErrors />
 			</Form.Field>

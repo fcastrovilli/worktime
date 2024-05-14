@@ -6,7 +6,7 @@
 	import type { PageData } from './$types';
 	import { calculateElapsedTime } from '$lib/basic_utils';
 	import SessionRunner from '$lib/components/crud/session_runner.svelte';
-	import NewSessionForm from '../../sessions/new_session_form.svelte';
+	import UpsertSessionForm from '$lib/components/crud/upsert_session_form.svelte';
 	import UpsertProjectForm from '$lib/components/crud/upsert_project_form.svelte';
 	import { Settings } from 'lucide-svelte';
 
@@ -46,7 +46,7 @@
 				All Sessions <small class="text-sm text-muted-foreground">({project.sessions.length})</small
 				>
 			</h3>
-			<NewSessionForm data={data.createSessionForm} projects={project} />
+			<UpsertSessionForm data={data.upsertSessionForm} projects={project} />
 		</div>
 		{#if project.sessions.length > 0}
 			<CardContainer>

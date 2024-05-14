@@ -5,8 +5,8 @@ import { eq, desc } from 'drizzle-orm';
 import { sessionsTable, type SessionWithProjectsAndClients } from '$lib/server/schemas';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { createSessionSchema } from '$lib/zod-schemas';
-import { createSessionAction, deleteSessionAction } from '$lib/server/crud/actions';
+import { upsertSessionSchema } from '$lib/zod-schemas';
+import { deleteSessionAction, upsertSessionAction } from '$lib/server/crud/actions';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) throw redirect(302, '/signup');
@@ -41,11 +41,11 @@ export const load: PageServerLoad = async ({ locals }) => {
 	return {
 		sessions,
 		projects,
-		createSessionForm: await superValidate(undefined, zod(createSessionSchema))
+		upsertSessionForm: await superValidate(undefined, zod(upsertSessionSchema))
 	};
 };
 
 export const actions: Actions = {
-	createSession: createSessionAction,
+	upsertSession: upsertSessionAction,
 	deleteSession: deleteSessionAction
 };

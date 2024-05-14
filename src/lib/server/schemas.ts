@@ -64,9 +64,34 @@ export const clientsRelations = relations(clientsTable, ({ one, many }) => ({
 	projects: many(projectsTable)
 }));
 
+export const projectsTable = pgTable('project', {
+	id: text('id').notNull().primaryKey(),
+	name: text('name').notNull().unique(),
+	description: text('description'),
+	deadline: timestamp('deadline', {
+		withTimezone: true,
+		mode: 'date'
+	}),
+	slug: text('slug').notNull().unique(),
+	client_id: text('client_id')
+		.notNull()
+		.references(() => clientsTable.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+	user_id: text('user_id')
+		.notNull()
+		.references(() => usersTable.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+	...timestamps
+});
+
+export const projectsRelations = relations(projectsTable, ({ many, one }) => ({
+	sessions: many(sessionsTable),
+	clients: one(clientsTable, { fields: [projectsTable.client_id], references: [clientsTable.id] }),
+	users: one(usersTable, { fields: [projectsTable.user_id], references: [usersTable.id] })
+}));
+
 export const sessionsTable = pgTable('session', {
 	id: text('id').notNull().primaryKey(),
 	details: text('details'),
+	duration: integer('duration').notNull().default(0),
 	start: timestamp('start', {
 		withTimezone: true,
 		mode: 'date'
@@ -97,30 +122,6 @@ export const sessionsRelations = relations(sessionsTable, ({ one }) => ({
 		references: [projectsTable.id]
 	}),
 	users: one(usersTable, { fields: [sessionsTable.user_id], references: [usersTable.id] })
-}));
-
-export const projectsTable = pgTable('project', {
-	id: text('id').notNull().primaryKey(),
-	name: text('name').notNull().unique(),
-	description: text('description'),
-	deadline: timestamp('deadline', {
-		withTimezone: true,
-		mode: 'date'
-	}),
-	slug: text('slug').notNull().unique(),
-	client_id: text('client_id')
-		.notNull()
-		.references(() => clientsTable.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
-	user_id: text('user_id')
-		.notNull()
-		.references(() => usersTable.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
-	...timestamps
-});
-
-export const projectsRelations = relations(projectsTable, ({ many, one }) => ({
-	sessions: many(sessionsTable),
-	clients: one(clientsTable, { fields: [projectsTable.client_id], references: [clientsTable.id] }),
-	users: one(usersTable, { fields: [projectsTable.user_id], references: [usersTable.id] })
 }));
 
 export type User = InferSelectModel<typeof usersTable>;

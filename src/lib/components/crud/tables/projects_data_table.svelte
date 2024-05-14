@@ -210,7 +210,7 @@
 								<Subscribe attrs={cell.attrs()} let:attrs>
 									<Table.Cell {...attrs}>
 										{#if cell.id === 'description'}
-											<div class="max-w-sm">
+											<div class="line-clamp-2">
 												<Render of={cell.render()} />
 											</div>
 										{:else if cell.id === 'id'}

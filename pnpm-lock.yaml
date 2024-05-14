@@ -97,6 +97,9 @@ devDependencies:
   autoprefixer:
     specifier: ^10.4.19
     version: 10.4.19(postcss@8.4.38)
+  dayjs:
+    specifier: ^1.11.11
+    version: 1.11.11
   drizzle-kit:
     specifier: ^0.20.17
     version: 0.20.18
@@ -145,6 +148,9 @@ devDependencies:
   svelte-headless-table:
     specifier: ^0.18.2
     version: 0.18.2(svelte@4.2.16)
+  svelte-time:
+    specifier: ^0.9.0
+    version: 0.9.0
   sveltekit-search-params:
     specifier: ^2.1.2
     version: 2.1.2(@sveltejs/kit@2.5.7)(svelte@4.2.16)(vite@5.2.11)
@@ -2412,8 +2418,6 @@ packages:
   /dayjs@1.11.11:
     resolution: {integrity: sha512-okzr3f11N6WuqYtZSvm+F776mB41wRZMhKP+hc34YdW+KmtYYK9iqvHSwo2k9FEH3fhGXvOPV6yz2IcSrfRUDg==}
     requiresBuild: true
-    dev: false
-    optional: true
 
   /debug@4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
@@ -4492,6 +4496,12 @@ packages:
       svelte: ^4.0.0
     dependencies:
       svelte: 4.2.16
+    dev: true
+
+  /svelte-time@0.9.0:
+    resolution: {integrity: sha512-XLEflTNZCjJM2ltCJL0NTpN9J2KBZXxupfl9S2sRFx+utSuQXbs3YIM14DIuENsjG1Qn5NtzRb0gviIB7lCMxQ==}
+    dependencies:
+      dayjs: 1.11.11
     dev: true
 
   /svelte@4.2.16:

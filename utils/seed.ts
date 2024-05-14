@@ -129,13 +129,15 @@ function seedDB(userId: string) {
 			// Create max 5 sessions per project
 			for (let j = 0; j < Math.floor(Math.random() * max + 1); j++) {
 				const start = faker.date.past();
-				const end = new Date(start.getTime() + Math.floor(Math.random() * (24 * 60 * 60 * 1000)));
+
+				const end = new Date(start.getTime() + Math.floor(Math.random() * (10 * 60 * 60 * 1000)));
 
 				sessions.push({
 					id: generateId(15),
 					details: faker.lorem.sentence(),
 					start: start,
 					end: end,
+					duration: end.getTime() - start.getTime(),
 					project_id: projectId,
 					client_id: clientId,
 					user_id: userId,

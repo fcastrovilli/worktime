@@ -1,6 +1,12 @@
-export const calculateElapsedTime = (start: Date | undefined, end: Date | undefined): string => {
-	if (!start || !end) return 'No time selected';
-	const elapsedTime = end.getTime() - start.getTime();
+export const calculateElapsedTime = (
+	start: Date | number,
+	end: Date | undefined = undefined
+): string => {
+	if (!start) return 'No time selected';
+	if (end && !(end instanceof Date)) return 'Invalid end date';
+	const elapsedTime: number = end
+		? end.getTime() - (start instanceof Date ? start.getTime() : start)
+		: (start as number);
 	const days = Math.floor(elapsedTime / (1000 * 60 * 60 * 24));
 	const hours = Math.floor((elapsedTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 	const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));

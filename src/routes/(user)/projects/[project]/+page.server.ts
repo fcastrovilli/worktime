@@ -5,7 +5,7 @@ import { projectsTable } from '$lib/server/schemas';
 import { redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { createSessionSchema } from '$lib/zod-schemas';
+import { upsertSessionSchema } from '$lib/zod-schemas';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	if (!locals.user) throw redirect(302, '/signup');
@@ -21,6 +21,6 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	if (!project) throw redirect(302, '/projects');
 	return {
 		project,
-		createSessionForm: await superValidate(undefined, zod(createSessionSchema))
+		upsertSessionForm: await superValidate(undefined, zod(upsertSessionSchema))
 	};
 };

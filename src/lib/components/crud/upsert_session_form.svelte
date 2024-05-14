@@ -1,7 +1,6 @@
 <script lang="ts">
 	import * as Form from '$lib/components/ui/form';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
-	import { createSessionSchema, type CreateSession } from '$lib/zod-schemas.js';
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
@@ -13,17 +12,32 @@
 		BasicProjectWithClientsAndSessions
 	} from '$lib/basic_utils';
 	import SelectProject from '$lib/components/crud/select_project.svelte';
+	import type {
+		Session,
+		SessionWithClients,
+		SessionWithProjects,
+		SessionWithProjectsAndClients
+	} from '$lib/server/schemas';
+	import { upsertSessionSchema, type UpsertSession } from '$lib/zod-schemas';
 
-	export let data: SuperValidated<Infer<CreateSession>>;
+	export let data: SuperValidated<Infer<UpsertSession>>;
 	export let projects:
 		| BasicProjectWithClients
 		| BasicProjectWithClientsAndSessions
 		| BasicProjectWithClients[]
 		| BasicProjectWithClientsAndSessions[];
+
+	export let session:
+		| Session
+		| SessionWithClients
+		| SessionWithProjects
+		| SessionWithProjectsAndClients
+		| undefined = undefined;
+
 	let open = false;
 
 	const form = superForm(data, {
-		validators: zodClient(createSessionSchema),
+		validators: zodClient(upsertSessionSchema),
 		taintedMessage: null,
 		dataType: 'json',
 		onResult({ result }) {
@@ -34,6 +48,7 @@
 					position: 'bottom-left'
 				});
 			} else {
+				console.log(result);
 				toast.error('Please fix the errors in the form.', {
 					position: 'bottom-left'
 				});
@@ -46,7 +61,9 @@
 	$: {
 		if ($formData.project) {
 			if (Array.isArray(projects)) {
-				$formData.project = projects.find((p) => p.id === $formData.project)?.id ?? '';
+				const selected_project = projects.find((p) => p.id === $formData.project);
+				$formData.project = selected_project?.id ?? '';
+				$formData.client = selected_project?.clients.id ?? '';
 			} else {
 				$formData.client = projects.clients.id; // projects.find((p) => p.id === $formData.project)?.clients.id ?? '';
 			}
@@ -57,12 +74,14 @@
 <Panel
 	bind:open
 	triggerClass="h-full rounded-full p-4"
-	title="New Session"
-	description="Here you can create a new session. Click 'Create' when you're done."
+	title={session ? 'Update Session' : 'New Session'}
+	description={session
+		? "Here you can update a session. Click 'Update' when you're done."
+		: "Here you can create a new session. Click 'Create' when you're done."}
 >
 	<Plus slot="trigger" size={35} />
 	<div slot="form">
-		<form method="POST" action="/sessions?/createSession" use:enhance>
+		<form method="POST" action="/sessions?/upsertSession" use:enhance>
 			<input type="hidden" name="client" value={$formData.client} />
 			<Form.Field {form} name="project">
 				<Form.Control let:attrs>
@@ -70,7 +89,7 @@
 					<SelectProject {form} {projects} {attrs} />
 				</Form.Control>
 				<Form.Description>
-					You can manage projects in your <a href="/projects">projects settings</a>.
+					You can manage projects in your <a href="/projects">projects page</a>.
 				</Form.Description>
 				<Form.FieldErrors />
 			</Form.Field>
@@ -87,7 +106,7 @@
 				<Form.FieldErrors />
 			</Form.Field>
 
-			<Form.Button class="mt-4 w-full">Create</Form.Button>
+			<Form.Button class="mt-4 w-full">{session ? 'Update' : 'Create'}</Form.Button>
 		</form>
 	</div>
 </Panel>
