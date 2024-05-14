@@ -8,15 +8,16 @@
 	export let open: boolean = false;
 
 	import { ssp, queryParam } from 'sveltekit-search-params';
-	import { onMount } from 'svelte';
 
 	const edit = queryParam('edit', ssp.boolean(), { showDefaults: false });
-	onMount(() => {
-		if ($edit) $edit = null;
-	});
 </script>
 
-<Sheet.Root bind:open>
+<Sheet.Root
+	bind:open
+	onOpenChange={(e) => {
+		if (!e) $edit = null;
+	}}
+>
 	<Sheet.Trigger asChild let:builder>
 		<Button builders={[builder]} variant="outline" class={triggerClass}>
 			<slot name="trigger">{open_label}</slot>

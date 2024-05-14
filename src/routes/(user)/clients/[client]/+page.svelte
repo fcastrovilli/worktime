@@ -6,6 +6,9 @@
 	import UpsertClientForm from '$lib/components/crud/upsert_client_form.svelte';
 	import type { BasicType } from '$lib/basic_utils';
 	import { Settings } from 'lucide-svelte';
+	import { ssp, queryParam } from 'sveltekit-search-params';
+
+	const edit = queryParam('edit', ssp.boolean(), { showDefaults: false });
 
 	export let data;
 
@@ -25,7 +28,7 @@
 		<div class="flex flex-col items-center justify-center gap-4">
 			<div class="flex h-full flex-row items-center justify-center gap-4">
 				<h1 class="text-5xl font-semibold">{client.name}</h1>
-				<UpsertClientForm data={data.upsertClient} {client}>
+				<UpsertClientForm data={data.upsertClient} {client} open={$edit ?? undefined}>
 					<Settings size={35} slot="trigger" />
 				</UpsertClientForm>
 			</div>

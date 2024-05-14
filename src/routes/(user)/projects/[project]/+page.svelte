@@ -12,6 +12,10 @@
 
 	export let data: PageData;
 
+	import { ssp, queryParam } from 'sveltekit-search-params';
+
+	const edit = queryParam('edit', ssp.boolean(), { showDefaults: false });
+
 	$: project = data.project;
 </script>
 
@@ -20,7 +24,12 @@
 		<div class="flex flex-col items-center justify-center gap-4">
 			<div class="flex flex-row items-center justify-center gap-4">
 				<h1 class="text-5xl font-semibold">{project.name}</h1>
-				<UpsertProjectForm data={data.upsertProject} {project} clients={data.clients}>
+				<UpsertProjectForm
+					data={data.upsertProject}
+					{project}
+					clients={data.clients}
+					open={$edit ?? undefined}
+				>
 					<Settings size={35} slot="trigger" />
 				</UpsertProjectForm>
 			</div>
