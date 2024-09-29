@@ -7,7 +7,12 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import pg from 'pg';
 
 const client = new pg.Client({
-	connectionString: process.env.DATABASE_URL as string
+	database: process.env.POSTGRES_DB!,
+	host: process.env.POSTGRES_HOST!,
+	port: 5432,
+	user: process.env.POSTGRES_USER!,
+	password: process.env.POSTGRES_PASSWORD!,
+	ssl: false
 });
 
 await client.connect();
@@ -34,7 +39,6 @@ const main = async () => {
 	try {
 		console.log('Clearing database 🗑️');
 		// Delete all data
-		await db.delete(schema.sessionsTable);
 		await db.delete(schema.sessionsTable);
 		await db.delete(schema.projectsTable);
 		await db.delete(schema.clientsTable);
