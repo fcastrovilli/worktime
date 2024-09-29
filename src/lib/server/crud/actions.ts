@@ -33,6 +33,7 @@ export async function upsertClientAction(event: RequestEvent) {
 					details: form.data.details,
 					email: form.data.email,
 					website: form.data.website,
+					currency: form.data.currency ?? 'EUR',
 					updatedAt: new Date()
 				})
 				.where(
@@ -50,6 +51,7 @@ export async function upsertClientAction(event: RequestEvent) {
 				details: form.data.details,
 				email: form.data.email,
 				website: form.data.website,
+				currency: form.data.currency ?? 'EUR',
 				createdAt: new Date(),
 				updatedAt: new Date()
 			});
@@ -118,6 +120,8 @@ export async function upsertProjectAction(event: RequestEvent) {
 					description: form.data.description,
 					slug: slug,
 					client_id: form.data.client,
+					budget: form.data.budget ?? 0,
+					pricehour: form.data.pricehour ?? 0,
 					deadline: form.data.deadline ? new Date(form.data.deadline) : null,
 					updatedAt: new Date()
 				})
@@ -135,12 +139,15 @@ export async function upsertProjectAction(event: RequestEvent) {
 				description: form.data.description,
 				client_id: form.data.client,
 				slug: slug,
+				budget: form.data.budget ?? 0,
+				pricehour: form.data.pricehour ?? 0,
 				deadline: form.data.deadline ? new Date(form.data.deadline) : null,
 				createdAt: new Date(),
 				updatedAt: new Date()
 			});
 		}
 	} catch (error) {
+		console.log(error);
 		return fail(400, { upsertProjectForm: form });
 	}
 
@@ -201,6 +208,7 @@ export async function upsertSessionAction(event: RequestEvent) {
 					duration: form.data.end
 						? new Date(form.data.end).getTime() - new Date(form.data.start).getTime()
 						: new Date().getTime() - new Date(form.data.start).getTime(),
+					pricehour: form.data.pricehour ?? 0,
 					details: form.data.details,
 					updatedAt: new Date()
 				})
@@ -221,12 +229,14 @@ export async function upsertSessionAction(event: RequestEvent) {
 				duration: form.data.end
 					? new Date(form.data.end).getTime() - new Date(form.data.start).getTime()
 					: new Date().getTime() - new Date(form.data.start).getTime(),
+				pricehour: form.data.pricehour ?? 0,
 				details: form.data.details,
 				createdAt: new Date(),
 				updatedAt: new Date()
 			});
 		}
 	} catch (error) {
+		console.log(error);
 		return fail(400, { createSessionForm: form });
 	}
 	return {

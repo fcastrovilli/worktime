@@ -21,6 +21,7 @@
 	import { upsertSessionSchema, type UpsertSession } from '$lib/zod-schemas';
 	import { onMount } from 'svelte';
 	import { CalendarDateTime, type DateValue } from '@internationalized/date';
+	import { NumberInput } from '../ui/numberinput';
 
 	export let data: SuperValidated<Infer<UpsertSession>>;
 	export let projects:
@@ -65,9 +66,11 @@
 			if (Array.isArray(projects)) {
 				const selected_project = projects.find((p) => p.id === $formData.project);
 				$formData.project = selected_project?.id ?? '';
+				$formData.pricehour = selected_project?.pricehour ?? 0;
 				$formData.client = selected_project?.clients.id ?? '';
 			} else {
 				$formData.client = projects.clients.id; // projects.find((p) => p.id === $formData.project)?.clients.id ?? '';
+				$formData.pricehour = projects.pricehour;
 			}
 		}
 	}
@@ -96,7 +99,8 @@
 				end: end?.toString() ?? null,
 				details: session.details,
 				client: session.client_id,
-				project: session.project_id
+				project: session.project_id,
+				pricehour: session.pricehour
 			};
 		}
 	});
@@ -127,6 +131,14 @@
 				<Form.FieldErrors />
 			</Form.Field>
 			<HourPicker {form} />
+			<Form.Field {form} name="pricehour">
+				<Form.Control let:attrs>
+					<Form.Label>Price/Hour</Form.Label>
+					<NumberInput {...attrs} bind:value={$formData.pricehour} />
+				</Form.Control>
+				<Form.Description>This is the price per hour for this session.</Form.Description>
+				<Form.FieldErrors />
+			</Form.Field>
 			<Form.Field {form} name="details">
 				<Form.Control let:attrs>
 					<Form.Label>Details</Form.Label>

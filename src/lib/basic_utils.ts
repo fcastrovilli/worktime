@@ -31,6 +31,8 @@ export type BasicProjectWithClients = {
 	name: string;
 	slug: string;
 	clients: BasicType;
+	pricehour: number;
+	budget: number;
 };
 
 export type BasicProjectWithClientsAndSessions = {
@@ -38,6 +40,8 @@ export type BasicProjectWithClientsAndSessions = {
 	name: string;
 	slug: string;
 	clients: BasicType;
+	pricehour: number;
+	budget: number;
 	sessions: {
 		id: string;
 		start: Date;

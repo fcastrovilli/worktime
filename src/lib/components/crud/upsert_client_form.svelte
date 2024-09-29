@@ -45,8 +45,11 @@
 			name: client.name,
 			email: client.email,
 			website: client.website,
-			details: client.details
+			details: client.details,
+			currency: client.currency
 		};
+	} else {
+		$formData.currency = 'EUR';
 	}
 </script>
 
@@ -81,6 +84,13 @@
 				<Form.Control let:attrs>
 					<Form.Label>Website</Form.Label>
 					<Input {...attrs} bind:value={$formData.website} />
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+			<Form.Field {form} name="currency">
+				<Form.Control let:attrs>
+					<Form.Label>Currency</Form.Label>
+					<Input {...attrs} bind:value={$formData.currency} />
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>

@@ -8,6 +8,27 @@
       "when": 1727634439006,
       "tag": "0000_handy_metal_master",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1727638959067,
+      "tag": "0001_bouncy_starjammers",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1727639756060,
+      "tag": "0002_chemical_rumiko_fujikawa",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1727641765736,
+      "tag": "0003_supreme_power_pack",
+      "breakpoints": true
     }
   ]
 }

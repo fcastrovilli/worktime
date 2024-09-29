@@ -21,6 +21,8 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
+	import { NumberInput } from '../ui/numberinput';
+	import SelectStatus from './select_status.svelte';
 
 	export let project:
 		| Project
@@ -75,8 +77,15 @@
 				name: project.name,
 				description: project.description,
 				deadline: deadline?.toString() ?? null,
-				client: project.client_id
+				client: project.client_id,
+				budget: project.budget,
+				pricehour: project.pricehour,
+				amountpaid: project.amountpaid,
+				status: project.status
 			};
+		} else {
+			$formData.budget = 0;
+			$formData.pricehour = 0;
 		}
 	});
 </script>
@@ -115,6 +124,41 @@
 			</Form.Field>
 
 			<DeadlineDatePicker {form} />
+			<Form.Field {form} name="status">
+				<Form.Control let:attrs>
+					<Form.Label>Status</Form.Label>
+					<SelectStatus {form} {attrs} />
+				</Form.Control>
+				<Form.Description>This is the status of the project.</Form.Description>
+				<Form.FieldErrors />
+			</Form.Field>
+
+			<Form.Field {form} name="budget">
+				<Form.Control let:attrs>
+					<Form.Label>Budget</Form.Label>
+					<NumberInput {...attrs} bind:value={$formData.budget} />
+				</Form.Control>
+				<Form.Description>This is the total budget for the project.</Form.Description>
+				<Form.FieldErrors />
+			</Form.Field>
+			<Form.Field {form} name="amountpaid">
+				<Form.Control let:attrs>
+					<Form.Label>Amount Paid</Form.Label>
+					<NumberInput {...attrs} bind:value={$formData.amountpaid} />
+				</Form.Control>
+				<Form.Description>This is the amount already paid for this project.</Form.Description>
+				<Form.FieldErrors />
+			</Form.Field>
+			<Form.Field {form} name="pricehour">
+				<Form.Control let:attrs>
+					<Form.Label>Price/Hour</Form.Label>
+					<NumberInput {...attrs} bind:value={$formData.pricehour} />
+				</Form.Control>
+				<Form.Description
+					>This is the default price per hour for this project's sessions.</Form.Description
+				>
+				<Form.FieldErrors />
+			</Form.Field>
 
 			<Form.Field {form} name="description">
 				<Form.Control let:attrs>

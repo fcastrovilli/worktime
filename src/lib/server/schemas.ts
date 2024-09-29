@@ -1,6 +1,6 @@
 import { relations, type InferSelectModel } from 'drizzle-orm';
 
-import { pgTable, text, timestamp, integer } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, integer, varchar } from 'drizzle-orm/pg-core';
 
 const timestamps = {
 	createdAt: timestamp('created_at', {
@@ -53,6 +53,7 @@ export const clientsTable = pgTable('client', {
 	details: text('details'),
 	website: text('website'),
 	slug: text('slug').notNull().unique(),
+	currency: text('currency').notNull().default('EUR'),
 	user_id: text('user_id')
 		.notNull()
 		.references(() => usersTable.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
@@ -73,6 +74,12 @@ export const projectsTable = pgTable('project', {
 		mode: 'date'
 	}),
 	slug: text('slug').notNull().unique(),
+	budget: integer('budget').notNull().default(0),
+	pricehour: integer('pricehour').notNull().default(0),
+	amountpaid: integer('amountpaid').notNull().default(0),
+	status: varchar('status', { enum: ['inactive', 'active', 'unpaid', 'paid'] })
+		.notNull()
+		.default('inactive'),
 	client_id: text('client_id')
 		.notNull()
 		.references(() => clientsTable.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
@@ -92,6 +99,7 @@ export const sessionsTable = pgTable('session', {
 	id: text('id').notNull().primaryKey(),
 	details: text('details'),
 	duration: integer('duration').notNull().default(0),
+	pricehour: integer('pricehour').notNull().default(0),
 	start: timestamp('start', {
 		withTimezone: true,
 		mode: 'date'

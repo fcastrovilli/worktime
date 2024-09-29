@@ -1,0 +1,1 @@
+ALTER TABLE "project" ADD COLUMN "pricehour" integer DEFAULT 0 NOT NULL;
