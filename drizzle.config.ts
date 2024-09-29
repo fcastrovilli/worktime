@@ -5,11 +5,6 @@ export default {
 	out: './migrations',
 	dialect: 'postgresql',
 	dbCredentials: {
-		database: process.env.POSTGRES_DB!,
-		host: process.env.POSTGRES_HOST!,
-		port: 5432,
-		user: process.env.POSTGRES_USER!,
-		password: process.env.POSTGRES_PASSWORD!,
-		ssl: false
+		url: process.env.DATABASE_URL!
 	}
 } satisfies Config;
