@@ -33,30 +33,6 @@
 			</DropdownMenu.Item>
 		</DropdownMenu.Label>
 		<DropdownMenu.Separator />
-		<div class="block sm:hidden">
-			<DropdownMenu.Group>
-				<DropdownMenu.Item href="/dashboard">
-					Dashboard
-					<DropdownMenu.Shortcut class="hidden sm:block">⇧⌘P</DropdownMenu.Shortcut>
-				</DropdownMenu.Item>
-
-				<DropdownMenu.Item href="/sessions">
-					Sessions
-					<DropdownMenu.Shortcut class="hidden sm:block">⇧⌘P</DropdownMenu.Shortcut>
-				</DropdownMenu.Item>
-
-				<DropdownMenu.Item href="/projects">
-					Projects
-					<DropdownMenu.Shortcut class="hidden sm:block">⇧⌘P</DropdownMenu.Shortcut>
-				</DropdownMenu.Item>
-
-				<DropdownMenu.Item href="/clients">
-					Clients
-					<DropdownMenu.Shortcut class="hidden sm:block">⇧⌘P</DropdownMenu.Shortcut>
-				</DropdownMenu.Item>
-			</DropdownMenu.Group>
-			<DropdownMenu.Separator />
-		</div>
 		<DropdownMenu.Item
 			on:click={() => {
 				logout_form.submit();

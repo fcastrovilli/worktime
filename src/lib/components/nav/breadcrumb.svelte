@@ -25,7 +25,7 @@
 </script>
 
 {#if crumbs.length > 0}
-	<dir class="m-2 hidden items-center justify-start border-b border-border/40 px-5 pb-2 sm:flex">
+	<div class="hidden items-center justify-start sm:flex">
 		<Breadcrumb.Root>
 			<Breadcrumb.List>
 				<Workflow />
@@ -46,5 +46,5 @@
 				{/each}
 			</Breadcrumb.List>
 		</Breadcrumb.Root>
-	</dir>
+	</div>
 {/if}
