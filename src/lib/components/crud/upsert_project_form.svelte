@@ -86,6 +86,8 @@
 		} else {
 			$formData.budget = 0;
 			$formData.pricehour = 0;
+			$formData.amountpaid = 0;
+			$formData.status = 'inactive';
 		}
 	});
 </script>
