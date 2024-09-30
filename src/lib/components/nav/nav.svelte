@@ -51,7 +51,7 @@
 								class="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:text-foreground md:h-8 md:w-8 {currentPage.startsWith(
 									item.href
 								)
-									? ''
+									? 'bg-accent text-accent-foreground'
 									: 'text-muted-foreground'}"
 								use:builder.action
 								{...builder}
@@ -66,6 +66,26 @@
 			{/if}
 		</nav>
 		<nav class="mt-auto flex flex-col items-center gap-4 px-2 py-4">
+			{#if user}
+				<Tooltip.Root>
+					<Tooltip.Trigger asChild let:builder>
+						<a
+							href="/profile"
+							class="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:text-foreground md:h-8 md:w-8 {currentPage.startsWith(
+								'/profile'
+							)
+								? 'bg-accent text-accent-foreground'
+								: 'text-muted-foreground'}"
+							use:builder.action
+							{...builder}
+						>
+							<Settings class="h-5 w-5" />
+							<span class="sr-only">Settings</span>
+						</a>
+					</Tooltip.Trigger>
+					<Tooltip.Content side="right">Settings</Tooltip.Content>
+				</Tooltip.Root>
+			{/if}
 			<Tooltip.Root>
 				<Tooltip.Trigger asChild let:builder>
 					<a
@@ -81,26 +101,6 @@
 				</Tooltip.Trigger>
 				<Tooltip.Content side="right">GitHub</Tooltip.Content>
 			</Tooltip.Root>
-			{#if user}
-				<Tooltip.Root>
-					<Tooltip.Trigger asChild let:builder>
-						<a
-							href="/profile"
-							class="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:text-foreground md:h-8 md:w-8 {currentPage.startsWith(
-								'/profile'
-							)
-								? ''
-								: 'text-muted-foreground'}"
-							use:builder.action
-							{...builder}
-						>
-							<Settings class="h-5 w-5" />
-							<span class="sr-only">Settings</span>
-						</a>
-					</Tooltip.Trigger>
-					<Tooltip.Content side="right">Settings</Tooltip.Content>
-				</Tooltip.Root>
-			{/if}
 		</nav>
 	</aside>
 	<header
@@ -137,14 +137,7 @@
 							</a>
 						{/each}
 					{/if}
-					<a
-						href="https://github.com/fcastrovilli/worktime"
-						target="_blank"
-						class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-					>
-						<GithubLogo class="h-5 w-5" />
-						GitHub
-					</a>
+
 					{#if user}
 						<a
 							href="/profile"
@@ -162,6 +155,14 @@
 							Sign Up
 						</a>
 					{/if}
+					<a
+						href="https://github.com/fcastrovilli/worktime"
+						target="_blank"
+						class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+					>
+						<GithubLogo class="h-5 w-5" />
+						GitHub
+					</a>
 				</nav>
 			</Sheet.Content>
 		</Sheet.Root>
