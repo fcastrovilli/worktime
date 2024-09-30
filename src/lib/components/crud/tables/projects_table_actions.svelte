@@ -7,7 +7,6 @@
 	export let record: ProjectWithClientsAndSessions | null = null;
 
 	let openDelete = false;
-	let openEdit = false;
 </script>
 
 <DropdownMenu.Root>

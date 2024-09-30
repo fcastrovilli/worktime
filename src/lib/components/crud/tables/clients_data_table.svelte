@@ -38,7 +38,7 @@
 		select: addSelectedRows()
 	});
 
-	const hidableCols = ['email', 'name', 'details', 'website', 'projects'];
+	const hidableCols = ['email', 'name', 'website', 'projects'];
 
 	let client: ClientWithProjects | null = null;
 
@@ -94,21 +94,6 @@
 			plugins: {},
 			cell: ({ value }) => {
 				return createRender(DataTableProjectButton, { projects: value });
-			}
-		}),
-		table.column({
-			accessor: 'details',
-			header: 'Details',
-			plugins: {
-				sort: {
-					disable: true
-				},
-				filter: {
-					exclude: true
-				}
-			},
-			cell: ({ value }) => {
-				return value ? value : 'No details provided';
 			}
 		}),
 		table.column({
@@ -197,11 +182,7 @@
 							{#each row.cells as cell (cell.id)}
 								<Subscribe attrs={cell.attrs()} let:attrs>
 									<Table.Cell {...attrs}>
-										{#if cell.id === 'details'}
-											<div class="line-clamp-2">
-												<Render of={cell.render()} />
-											</div>
-										{:else if cell.id === 'projects'}
+										{#if cell.id === 'projects'}
 											<Render of={cell.render()} />
 										{:else if cell.id === 'id'}
 											<div class="px-1">

@@ -1,10 +1,5 @@
 <script lang="ts">
-	import type {
-		Client,
-		Project,
-		Session,
-		SessionWithProjectsAndClients
-	} from '$lib/server/schemas';
+	import type { Client, Project, SessionWithProjectsAndClients } from '$lib/server/schemas';
 	import { writable } from 'svelte/store';
 	import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
 	import * as Table from '$lib/components/ui/table';
@@ -49,7 +44,7 @@
 		timeStyle: 'short'
 	});
 
-	const hidableCols = ['start', 'end', 'details', 'clients', 'projects', 'Duration'];
+	const hidableCols = ['start', 'end', 'clients', 'projects', 'Duration'];
 
 	let session: SessionWithProjectsAndClients | null = null;
 	let projects: Project[] | Project | null = null;
@@ -111,21 +106,6 @@
 			plugins: {},
 			cell: ({ value }) => {
 				return value ? df.format(value) : '∞';
-			}
-		}),
-		table.column({
-			accessor: 'details',
-			header: 'Details',
-			plugins: {
-				sort: {
-					disable: true
-				},
-				filter: {
-					exclude: true
-				}
-			},
-			cell: ({ value }) => {
-				return value ? value : 'No details provided';
 			}
 		}),
 		table.column({
@@ -222,11 +202,7 @@
 							{#each row.cells as cell (cell.id)}
 								<Subscribe attrs={cell.attrs()} let:attrs>
 									<Table.Cell {...attrs}>
-										{#if cell.id === 'details'}
-											<div class="line-clamp-2">
-												<Render of={cell.render()} />
-											</div>
-										{:else if cell.id === 'id'}
+										{#if cell.id === 'id'}
 											<div class="px-1">
 												<Render of={cell.render()} />
 											</div>

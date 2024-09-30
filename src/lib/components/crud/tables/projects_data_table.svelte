@@ -42,7 +42,7 @@
 		dateStyle: 'short'
 	});
 
-	const hidableCols = ['name', 'deadline', 'description', 'clients', 'sessions'];
+	const hidableCols = ['name', 'deadline', 'clients', 'sessions'];
 
 	let project: ProjectWithClientsAndSessions | null = null;
 	let clients: Client[] | Client | null = null;
@@ -106,21 +106,6 @@
 			plugins: {},
 			cell: () => {
 				return sessions ? (Array.isArray(sessions) ? sessions.length : 0) : 0;
-			}
-		}),
-		table.column({
-			accessor: 'description',
-			header: 'Description',
-			plugins: {
-				sort: {
-					disable: true
-				},
-				filter: {
-					exclude: true
-				}
-			},
-			cell: ({ value }) => {
-				return value ? value : 'No description provided';
 			}
 		}),
 		table.column({
@@ -209,11 +194,7 @@
 							{#each row.cells as cell (cell.id)}
 								<Subscribe attrs={cell.attrs()} let:attrs>
 									<Table.Cell {...attrs}>
-										{#if cell.id === 'description'}
-											<div class="line-clamp-2">
-												<Render of={cell.render()} />
-											</div>
-										{:else if cell.id === 'id'}
+										{#if cell.id === 'id'}
 											<div class="px-1">
 												<Render of={cell.render()} />
 											</div>
