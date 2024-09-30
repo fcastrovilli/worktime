@@ -7,6 +7,6 @@
 
 <Nav user={data.user} />
 <Toaster />
-<div class="sm:gap-4 sm:pl-14">
+<div class="pt-14 sm:gap-4 sm:pl-14">
 	<slot></slot>
 </div>

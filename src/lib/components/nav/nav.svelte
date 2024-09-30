@@ -104,7 +104,7 @@
 		</nav>
 	</aside>
 	<header
-		class="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background p-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent"
+		class="fixed top-0 z-30 flex h-14 w-full items-center gap-4 border-b bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:pr-20"
 	>
 		<Sheet.Root>
 			<Sheet.Trigger asChild let:builder>
