@@ -32,7 +32,7 @@
 	<Popover.Trigger
 		class={cn(
 			buttonVariants({ variant: 'outline' }),
-			'w-full justify-between',
+			'w-full justify-between capitalize',
 			!$formData.status && 'text-muted-foreground'
 		)}
 		role="combobox"
@@ -49,6 +49,7 @@
 				<Command.CommandSeparator class="my-2" />
 				{#each status as state}
 					<Command.Item
+						class="capitalize"
 						value={state}
 						onSelect={() => {
 							$formData.status = state;
@@ -57,7 +58,10 @@
 					>
 						{state}
 						<Check
-							class={cn('ml-auto h-4 w-4', state !== $formData.status && 'text-transparent')}
+							class={cn(
+								'ml-auto h-4 w-4 capitalize',
+								state !== $formData.status && 'text-transparent'
+							)}
 						/>
 					</Command.Item>
 				{/each}

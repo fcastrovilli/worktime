@@ -46,7 +46,7 @@
 				open = false;
 				toast.success(project ? 'Project updated successfully!' : 'Project created successfully!', {
 					description: result.data?.project_name,
-					position: 'bottom-left'
+					position: 'bottom-right'
 				});
 				if (result.data?.project_slug !== slug) {
 					setTimeout(() => {
@@ -55,7 +55,7 @@
 				}
 			} else {
 				toast.error('Please fix the errors in the form.', {
-					position: 'bottom-left'
+					position: 'bottom-right'
 				});
 			}
 		}

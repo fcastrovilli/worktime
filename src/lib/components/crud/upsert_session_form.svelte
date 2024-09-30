@@ -48,12 +48,12 @@
 				open = false;
 				toast.success('Session created successfully!', {
 					description: result.data?.session_name,
-					position: 'bottom-left'
+					position: 'bottom-right'
 				});
 			} else {
 				console.log(result);
 				toast.error('Please fix the errors in the form.', {
-					position: 'bottom-left'
+					position: 'bottom-right'
 				});
 			}
 		}

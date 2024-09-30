@@ -22,7 +22,7 @@
 				open = false;
 				toast.success(client ? 'Client updated successfully!' : 'Client created successfully!', {
 					description: result.data?.client_name,
-					position: 'bottom-left'
+					position: 'bottom-right'
 				});
 				if (result.data?.client_slug) {
 					setTimeout(() => {
@@ -31,7 +31,7 @@
 				}
 			} else {
 				toast.error('Please fix the errors in the form.', {
-					position: 'bottom-left'
+					position: 'bottom-right'
 				});
 			}
 		}
